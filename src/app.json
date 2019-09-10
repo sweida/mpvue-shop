@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/main",
+    "pages/detail/main",
     "pages/personal/main",
     "pages/counter/main",
     "pages/card/main",
