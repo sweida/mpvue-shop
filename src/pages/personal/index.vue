@@ -1,0 +1,184 @@
+<template>
+  <div >
+	  <!-- <div class="bg-gradual-red grid padding-lg">
+		  <div class="cu-list menu-avatar">
+			  <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
+			  <view class="content flex-sub">
+					<view>正义天使 凯尔</view>
+					<view class="text-gray text-sm flex justify-between">
+						十天前
+						<view class="text-gray text-sm">
+							<text class="cuIcon-attentionfill margin-lr-xs"></text> 10
+							<text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
+							<text class="cuIcon-messagefill margin-lr-xs"></text> 30
+						</view>
+					</view>
+				</view>
+		  </div>
+	  </div> -->
+		<view class="grid col-1">
+			<view class="text-center shadow-blur person-bg">
+				<view class="cu-list menu-avatar">
+						<view class="cu-item bg-no">
+							<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
+							<view class="content flex-sub">
+								<view>正义天使 凯尔</view>
+								
+								<view class='cu-tag round bg-black'>
+									<text class="cuIcon-circlefill text-grey"></text>
+									普通会员
+								</view>
+
+								<!-- <view class="text-gray text-sm flex justify-between">
+									十天前
+									<view class="text-gray text-sm">
+										<text class="cuIcon-attentionfill margin-lr-xs"></text> 10
+										<text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
+										<text class="cuIcon-messagefill margin-lr-xs"></text> 30
+									</view>
+								</view> -->
+							</view>
+						</view>
+					</view>
+			</view>
+
+		</view>
+
+	  <!-- <view class="bg-gradual-red">
+		<view class="cu-card case no-card">
+			<view class="cu-item shadow">
+				<view class="cu-list menu-avatar">
+					<view class="cu-item">
+						<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
+						<view class="content flex-sub">
+							<view class="text-grey">正义天使 凯尔</view>
+							<view class="text-gray text-sm flex justify-between">
+								十天前
+								<view class="text-gray text-sm">
+									<text class="cuIcon-attentionfill margin-lr-xs"></text> 10
+									<text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
+									<text class="cuIcon-messagefill margin-lr-xs"></text> 30
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		  </view> -->
+	  <view  class="cu-list menu card-menu margin--top">
+		  <view class="cu-item arrow">
+			<view class="content">
+				<text class="text-grey">我的订单</text>
+			</view>
+		</view>
+		<view class="cu-list grid col-4 no-border">
+			<view class="cu-item" v-for="(item,index) in cuIconList" :key="index">
+				<view :class="['cuIcon-' + item.cuIcon,'text-' + item.color]">
+					<view class="cu-tag badge" v-if="item.badge!=0">
+						<block v-if="item.badge!=1">{{item.badge>99?'99+':item.badge}}</block>
+					</view>
+				</view>
+				<text>{{item.name}}</text>
+			</view>
+		</view>
+
+	</view>
+    <view class="cu-list menu card-menu">
+		<view class="cu-item arrow">
+			<view class="content">
+				<text class="cuIcon-circlefill text-grey"></text>
+				<text class="text-grey">优惠券</text>
+			</view>
+		</view>
+		<view class="cu-item arrow">
+			<button class="cu-btn content" open-type="contact">
+				<text class="cuIcon-btn text-olive"></text>
+				<text class="text-grey">领取中心</text>
+			</button>
+		</view>
+		<view class="cu-item arrow">
+			<navigator class="content" hover-class="none" url="../list/list" open-type="redirect">
+				<text class="cuIcon-discoverfill text-orange"></text>
+				<text class="text-grey">常见问题</text>
+			</navigator>
+		</view>
+		<view class="cu-item arrow">
+			<view class="content">
+				<text class="cuIcon-emojiflashfill text-pink"></text>
+				<text class="text-grey">联系客服</text>
+			</view>
+		</view>
+	</view>
+  </div>
+</template>
+
+<script>
+import card from '@/components/card'
+
+export default {
+  data () {
+    return {
+	  motto: 'Hello miniprograme',
+	  cuIconList: [{
+					cuIcon: 'cardboardfill',
+					color: 'red',
+					badge: 120,
+					name: '待付款'
+				}, {
+					cuIcon: 'recordfill',
+					color: 'orange',
+					badge: 1,
+					name: '待配送'
+				}, {
+					cuIcon: 'picfill',
+					color: 'yellow',
+					badge: 0,
+					name: '待提货'
+				}, {
+					cuIcon: 'noticefill',
+					color: 'olive',
+					badge: 22,
+					name: '已配送'
+				}],
+
+    }
+  },
+
+  components: {
+    card
+  },
+
+  methods: {
+
+  },
+
+  created () {
+    // let app = getApp()
+  }
+}
+</script>
+
+<style scoped>
+.menu-avatar .cu-avatar{
+	border: 2px solid #fff;
+}
+.menu-avatar .content{
+	text-align: left;
+	padding-left: 6px;
+}
+
+.menu-avatar .cu-tag{
+	height: 19px;
+	font-size: 10px;
+}
+
+.person-bg{
+	padding: 30px 0 50px;
+	background: linear-gradient(90deg, #e6445a, #f96b87)
+}
+.margin--top{
+    margin-top: -40px;
+}
+
+</style>
