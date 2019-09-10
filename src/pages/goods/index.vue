@@ -183,7 +183,7 @@
 	}
 
 	.VerticalNav.nav {
-		width: 200rpx;
+		width: 160rpx;
 		white-space: initial;
 	}
 
@@ -203,13 +203,13 @@
 
 	.VerticalNav.nav .cu-item.cur::after {
 		content: "";
-		width: 8upx;
-		height: 30upx;
-		border-radius: 10upx 0 0 10upx;
+		width: 8rpx;
+		height: 30rpx;
+		border-radius: 10rpx 0 0 10rpx;
 		position: absolute;
 		background-color: currentColor;
 		top: 0;
-		right: 0upx;
+		right: 0rpx;
 		bottom: 0;
 		margin: auto;
 	}

@@ -17,15 +17,16 @@
 		  </div>
 	  </div> -->
 		<view class="grid col-1">
-			<view class="text-center shadow-blur person-bg" style="background-image:url(/static/images/person-bg.png);">
+			<view class="text-center shadow-blur person-bg">
+				<img src="/static/images/person-bg.png" alt="" width="100%" class="img-bg">
 				<view class="cu-list menu-avatar">
 						<view class="cu-item bg-no">
 							<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
-							<view class="content flex-sub">
+							<view class="content flex-sub text-left">
 								<view>正义天使 凯尔</view>
 								
 								<view class='cu-tag round bg-black'>
-									<text class="cuIcon-circlefill text-grey"></text>
+									<text class="cuIcon-crown text-orange"></text>
 									普通会员
 								</view>
 
@@ -163,10 +164,6 @@ export default {
 .menu-avatar .cu-avatar{
 	border: 2px solid #fff;
 }
-.menu-avatar .content{
-	text-align: left;
-	padding-left: 6px;
-}
 
 .menu-avatar .cu-tag{
 	height: 19px;
@@ -175,7 +172,17 @@ export default {
 
 .person-bg{
 	padding: 30px 0 50px;
-	background-size: 100%;
+	overflow: hidden;
+}
+.person-bg .bg-no{
+	padding-right: 0 !important;
+}
+.img-bg{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+
 }
 .margin--top{
 	margin-top: -40px;

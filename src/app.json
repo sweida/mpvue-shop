@@ -15,7 +15,7 @@
   },
   "tabBar": {
     "color": "#999",
-    "backgroundColor": "#fafafa",
+    "backgroundColor": "#fff",
     "selectedColor": "#333",
     "borderStyle": "white",
 
@@ -27,43 +27,20 @@
     }, {
       "text": "分类",
       "pagePath": "pages/goods/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
+      "iconPath": "static/tabs/goods.png",
+      "selectedIconPath": "static/tabs/goods-active.png"
     }, {
       "text": "购物车",
       "pagePath": "pages/card/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
+      "iconPath": "static/tabs/card.png",
+      "selectedIconPath": "static/tabs/card-active.png"
     }, {
       "text": "我的",
       "pagePath": "pages/personal/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
+      "iconPath": "static/tabs/personal.png",
+      "selectedIconPath": "static/tabs/personal-active.png"
     }
   ],
-
-    "items": [{
-      "name": "首页",
-      "pagePath": "pages/index/main",
-      "icon": "static/tabs/home.png",
-      "activeIcon": "static/tabs/home-active.png"
-    }, {
-      "name": "分类",
-      "pagePath": "pages/goods/main",
-      "icon": "static/tabs/orders.png",
-      "activeIcon": "static/tabs/orders-active.png"
-    }, {
-      "name": "购物车",
-      "pagePath": "pages/card/main",
-      "icon": "static/tabs/orders.png",
-      "activeIcon": "static/tabs/orders-active.png"
-    }, {
-      "name": "我的",
-      "pagePath": "pages/personal/main",
-      "icon": "static/tabs/orders.png",
-      "activeIcon": "static/tabs/orders-active.png"
-    }
-  ],
-    "position": "bottom"
+  "position": "bottom"
   }
 }
