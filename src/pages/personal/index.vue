@@ -17,7 +17,7 @@
 		  </div>
 	  </div> -->
 		<view class="grid col-1">
-			<view class="text-center shadow-blur person-bg">
+			<view class="text-center shadow-blur person-bg" style="background-image:url(/static/images/person-bg.png);">
 				<view class="cu-list menu-avatar">
 						<view class="cu-item bg-no">
 							<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
@@ -175,10 +175,10 @@ export default {
 
 .person-bg{
 	padding: 30px 0 50px;
-	background: linear-gradient(90deg, #e6445a, #f96b87)
+	background-size: 100%;
 }
 .margin--top{
-    margin-top: -40px;
+	margin-top: -40px;
 }
 
 </style>
