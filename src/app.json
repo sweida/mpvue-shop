@@ -23,14 +23,14 @@
       "pagePath": "pages/index/main",
       "iconPath": "static/tabs/home.png",
       "selectedIconPath": "static/tabs/home-active.png"
-    },{
-      "text": "购物车",
-      "pagePath": "pages/card/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
     }, {
       "text": "分类",
       "pagePath": "pages/goods/main",
+      "iconPath": "static/tabs/orders.png",
+      "selectedIconPath": "static/tabs/orders-active.png"
+    }, {
+      "text": "购物车",
+      "pagePath": "pages/card/main",
       "iconPath": "static/tabs/orders.png",
       "selectedIconPath": "static/tabs/orders-active.png"
     }, {
@@ -47,13 +47,13 @@
       "icon": "static/tabs/home.png",
       "activeIcon": "static/tabs/home-active.png"
     }, {
-      "name": "购物车",
-      "pagePath": "pages/card/main",
+      "name": "分类",
+      "pagePath": "pages/goods/main",
       "icon": "static/tabs/orders.png",
       "activeIcon": "static/tabs/orders-active.png"
     }, {
-      "name": "分类",
-      "pagePath": "pages/goods/main",
+      "name": "购物车",
+      "pagePath": "pages/card/main",
       "icon": "static/tabs/orders.png",
       "activeIcon": "static/tabs/orders-active.png"
     }, {

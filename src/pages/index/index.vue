@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<swiper class="card-swiper" :class="dotStyle?'square-dot':'round-dot'" :indicator-dots="true" :circular="true"
+		<swiper class="card-swiper square-dot" :indicator-dots="true" :circular="true"
 		 :autoplay="true" interval="5000" duration="500" @change="cardSwiper" indicator-color="#8799a3"
 		 indicator-active-color="#0081ff">
 			<swiper-item v-for="(item,index) in swiperList" :key="index" :class="cardCur==index?'cur':''">
@@ -24,6 +24,27 @@
 				</view>
 
 
+		</view>
+
+		<view class="cu-card article no-card">
+			<view class="cu-item shadow padding-tb">
+				<view class="content">
+					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
+					 mode="aspectFill"></image>
+					<view class="desc">
+						<view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view>
+						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
+						<view class="text-xs text-gray desc"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
+						<view class="flex align-end justify-between">
+							<view class="margin-top-sm">
+								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
+								<view class="text-price text-xl text-orange margin-right">80.00</view>
+							</view>
+							<button class="cu-btn round bg-green sm">+购物车</button>
+						</view>
+					</view>
+				</view>
+			</view>
 		</view>
 
 		<view class="cu-card article no-card">
