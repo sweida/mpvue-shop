@@ -35,7 +35,7 @@
 
 		</view>
 
-		<view class="cu-card article no-card">
+		<view class="cu-card article no-card solid-bottom">
 			<view class="cu-item shadow padding-tb" @click="goDetail('a')">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
@@ -56,7 +56,7 @@
 			</view>
 		</view>
 
-		<view class="cu-card article no-card">
+		<view class="cu-card article no-card solid-bottom">
 			<view class="cu-item shadow padding-tb">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
@@ -77,7 +77,7 @@
 			</view>
 		</view>
 
-		<view class="cu-card article no-card">
+		<view class="cu-card article no-card solid-bottom">
 			<view class="cu-item shadow padding-tb">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"

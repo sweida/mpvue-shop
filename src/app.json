@@ -1,12 +1,12 @@
 {
   "pages": [
+    "pages/card/main",
     "pages/index/main",
     "pages/addresslist/main",
     "pages/address/main",
     "pages/detail/main",
     "pages/personal/main",
     "pages/counter/main",
-    "pages/card/main",
     "pages/goods/main"
   ],
   "window": {
