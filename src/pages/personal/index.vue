@@ -86,10 +86,10 @@
 
 	</view>
     <view class="cu-list menu card-menu">
-		<view class="cu-item arrow">
+		<view class="cu-item arrow" @click="goRouter('addresslist')">
 			<view class="content">
 				<text class="cuIcon-circlefill text-grey"></text>
-				<text class="text-grey">优惠券</text>
+				<text class="text-grey">地址管理</text>
 			</view>
 		</view>
 		<view class="cu-item arrow">
@@ -118,10 +118,11 @@
 import card from '@/components/card'
 
 export default {
-  data () {
-    return {
-	  motto: 'Hello miniprograme',
-	  cuIconList: [{
+	data () {
+		return {
+			motto: 'Hello miniprograme',
+			cuIconList: [
+				{
 					cuIcon: 'cardboardfill',
 					color: 'red',
 					badge: 120,
@@ -141,22 +142,26 @@ export default {
 					color: 'olive',
 					badge: 22,
 					name: '已配送'
-				}],
+				}
+			],
 
-    }
-  },
+		}
+	},
 
-  components: {
-    card
-  },
+	components: {
+		card
+	},
 
-  methods: {
+	methods: {
+		goRouter(url) {			
+			wx.navigateTo({url: `/pages/${url}/main`})
+		}
 
-  },
+	},
 
-  created () {
-    // let app = getApp()
-  }
+	created () {
+		// let app = getApp()
+	}
 }
 </script>
 

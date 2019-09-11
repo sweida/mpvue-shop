@@ -1,5 +1,14 @@
 <template>
 	<view>
+		<view class="cu-bar search bg-white">
+			<view class="search-form round">
+				<text class="cuIcon-search"></text>
+				<input @focus="InputFocus" @blur="InputBlur" :adjust-position="false" type="text" placeholder="请输入关键字搜索" confirm-type="search" />
+			</view>
+			<view class="action">
+				<button class="cu-btn bg-green shadow-blur round">搜索</button>
+			</view>
+		</view>
 		<swiper class="card-swiper square-dot" :indicator-dots="true" :circular="true"
 		 :autoplay="true" interval="5000" duration="500" @change="cardSwiper" indicator-color="#8799a3"
 		 indicator-active-color="#0081ff">
@@ -27,7 +36,7 @@
 		</view>
 
 		<view class="cu-card article no-card">
-			<view class="cu-item shadow padding-tb">
+			<view class="cu-item shadow padding-tb" @click="goDetail('a')">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
 					 mode="aspectFill"></image>
@@ -40,7 +49,7 @@
 								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
 								<view class="text-price text-xl text-orange margin-right">80.00</view>
 							</view>
-							<button class="cu-btn round bg-green sm">+购物车</button>
+							<button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button>
 						</view>
 					</view>
 				</view>
@@ -61,7 +70,7 @@
 								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
 								<view class="text-price text-xl text-orange margin-right">80.00</view>
 							</view>
-							<button class="cu-btn round bg-green sm">+购物车</button>
+							<button class="cu-btn round bg-green sm" @click.stop="addGood('a')">+购物车</button>
 						</view>
 					</view>
 				</view>
@@ -179,6 +188,16 @@
 		methods: {
 			TabSelect(e) {
 			},
+			goDetail() {
+				var url = '/pages/detail/main'
+				wx.navigateTo({url})
+			},
+			addGood(a) {
+				// event.stopPropagation()
+				console.log(a, 444);
+				// return false
+				
+			},
 			DotStyle(e) {
 				this.dotStyle = e.detail.value
 			},
@@ -238,6 +257,9 @@
 </script>
 
 <style>
+.card-swiper{
+	background: #fff;
+}
 .desc{
 	overflow: hidden;
 	text-overflow: ellipsis;
