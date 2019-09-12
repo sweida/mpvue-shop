@@ -1,32 +1,58 @@
 <template>
 	<view class="card-page">
-		<!-- <div class="contain">
+		<div class="contain" v-if="goodlist.length==0">
 			<img src="/static/images/card.png" alt="" class="noList">
 			<view class="padding">购物车是空的哦～</view>
 			<button class="cu-btn bg-red">去逛逛</button>
-		</div> -->
-		<div>
-			<view class="cu-card article no-card solid-bottom">
-			<view class="cu-item shadow padding-tb" @click="goDetail('a')">
-				<view class="content">
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-					 mode="aspectFill"></image>
-					<view class="desc">
-						<view class="desc"> 
-							这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷
-						</view>
-						<!-- <view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view> -->
-						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
-						<view class="flex align-end justify-between">
-							<view class="margin-top-sm">
-								<view class="text-price text-xl text-orange margin-right">80.00</view>
+		</div>
+		<div v-else>
+
+			<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodlist" :key="index">
+				<text class="text-xxl margin-left-sm" @click="checkGood(index)">
+					<text class="text-green cuIcon-roundcheckfill" v-if="item.check"></text>
+					<text class="text-ddd cuIcon-roundcheck" v-else></text>
+				</text>
+				<view class="cu-item shadow padding-tb">
+					<view class="content padding-left-sm">
+						<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
+						mode="aspectFill"></image>
+						<view class="desc">
+							<view class="titles"> 
+								{{item.goodname}}
 							</view>
-							<button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button>
+							<view class="flex align-end justify-between">
+								<view class="margin-top-sm">
+									<view class="text-price text-xl text-orange margin-right">{{item.amount}}</view>
+								</view>
+								<view class="button-box">
+									<text class="btn-box" @click="decCount(index)">
+										<text class="lg text-gray cuIcon-move" ></text>
+									</text>
+									<text class="margin-lr-sm">{{item.count}}</text>
+									<text class="btn-box" @click="addCount(index)">
+										<text class="lg text-gray cuIcon-add" ></text>
+									</text>
+								</view>
+							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-		</view>
+
+			<view class="cu-bar bg-white tabbar border shop solid-top">
+				<text class="text-xxl padding-lr-sm" @click="handleAllCheck">
+					<text class="text-green cuIcon-roundcheckfill" v-if="allCheck"></text>
+					<text class="text-ddd cuIcon-roundcheck" v-else></text>
+				</text>
+				<view class="text-df">
+					全选
+				</view>
+				<view class="action text-orange">
+					<view class="text-price text-df text-orange margin-right">共计：{{allPrice}}</view>
+				</view>
+				<view class="bg-red submit">确认订单</view>
+			</view>
+
 		</div>
 	</view>
 </template>
@@ -36,39 +62,165 @@
 		data() {
 			return {
 				list: [],
+				goodlist: [
+					{
+						goodname: '这是标题啊啊啊啊啊啊1',
+						check: false,
+						count: 1,
+						amount: 88.90,
+						img: 'ss'
+					}, {
+						goodname: '这是标题啊啊啊啊啊啊2',
+						check: true,
+						count: 3,
+						amount: 88.70,
+						img: 'ss'
+					}, {
+						goodname: '这是标题啊啊啊啊啊啊3',
+						check: true,
+						count: 2,
+						amount: 88.00,
+						img: 'ss'
+					}, 
+				],
 			};
 		},
+		computed: {
+			// 所有价格
+			allPrice: function() {
+				let sum = 0
+				this.goodlist.forEach(item => {
+					if (item.check) {
+						sum += item.amount * item.count
+					}
+						
+				})
+				return sum
+			},
+			// 是否全选
+			allCheck: function() {
+				const checkAdult = (item) => {
+					return item.check
+				}
+				if (!this.goodlist.every(checkAdult)) {
+					return false
+				} else {
+					return true
+				}
+			} 
+		},
 		methods: {
+			checkGood(index) {
+				this.goodlist[index].check = !this.goodlist[index].check
+			},
+			decCount(index) {
+				if (this.goodlist[index].count > 1) {
+					this.goodlist[index].count--
+				} else {
+					wx.showModal({
+                    title: '是否删除该商品？',
+                    content: '',
+                    success(res){
+                        if(res.confirm){
+                            console.log('删除');
+                            
+                        }
+                    }
+                })
+				}
+			},
+			addCount(index) {
+				this.goodlist[index].count++
+			},
+			handleAllCheck() {
+				if (this.allCheck) {
+					this.allPrice = 0
+					this.goodlist.forEach(item => {
+						item.check = false
+						this.allCheck = false
+						this.allPrice += 0
+					})
+				} else {
+					this.allPrice = 0
+					this.goodlist.forEach(item => {
+						item.check = true
+						this.allCheck = true
+						this.allPrice += item.amount * item.count
+					})
+				}
+			}
 			
 		},
 	}
 </script>
 
 <style>
-	page, .card-page{
-		height: 100%;
-		background: #fff;
-	}
-	.contain{
-		height: 100%;
-		text-align: center;
-	}
-	.noList{
-		width: 596rpx;
-		height: 328rpx;
-		margin-top: 200rpx;
-	}
-	.cu-btn{
-		border-radius: 0;
-		padding: 0 80rpx;
-	}
+/* 空购物车 */
+page, .card-page{
+	height: 100%;
+	background: #fff;
+}
+.contain{
+	height: 100%;
+	text-align: center;
+}
+.noList{
+	width: 596rpx;
+	height: 328rpx;
+	margin-top: 200rpx;
+}
+.cu-btn{
+	border-radius: 0;
+	padding: 0 80rpx;
+}
 
-.desc{
+
+.card-page .article{
+	display: flex;
+	align-items: center;
+}
+
+
+.titles{
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: -webkit-box !important;
 	-webkit-line-clamp:2;
 	-webkit-box-orient: vertical;
 }
+.button-box{
+	display: flex;
+	line-height: 40xrpx;
+	justify-content: space-between;
+	align-items: center;
+}
+.btn-box{
+	border: 1px solid #ddd;
+	border-radius: 50%;
+	width: 40rpx;
+	height: 40rpx;
+	text-align: center;
+	line-height: 40rpx;
+}
+
+.text-ddd{
+	color: #ddd
+}
+.cu-card.article>.cu-item .content{
+	padding-left: 20rpx;
+}
+.cu-card>.cu-item{
+	flex: 1;
+}
+
+.tabbar{
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+}
+.cu-bar.tabbar.shop .action{
+	width: 400rpx;
+}
+
 
 </style>
