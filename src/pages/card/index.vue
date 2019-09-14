@@ -95,7 +95,7 @@
 					}
 						
 				})
-				return sum
+				return sum.toFixed(2)
 			},
 			// 是否全选
 			allCheck: function() {
@@ -117,13 +117,13 @@
 				if (this.goodlist[index].count > 1) {
 					this.goodlist[index].count--
 				} else {
+					let that = this
 					wx.showModal({
                     title: '是否删除该商品？',
                     content: '',
                     success(res){
                         if(res.confirm){
-                            console.log('删除');
-                            
+							that.goodlist.splice(index, 1)
                         }
                     }
                 })
