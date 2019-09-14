@@ -1,8 +1,10 @@
 {
   "pages": [
-    "pages/orderlist/main",
-    "pages/card/main",
     "pages/index/main",
+    "pages/orderlist/main",
+    "pages/vouchers/main",
+    "pages/selectAddress/main",
+    "pages/card/main",
     "pages/addresslist/main",
     "pages/address/main",
     "pages/detail/main",

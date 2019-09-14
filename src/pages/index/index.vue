@@ -49,7 +49,10 @@
 								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
 								<view class="text-price text-xl text-orange margin-right">80.00</view>
 							</view>
-							<button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button>
+							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood('a')">
+								<text class="cuIcon-cart"></text>
+							</view>
+							<!-- <button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button> -->
 						</view>
 					</view>
 				</view>
@@ -70,7 +73,9 @@
 								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
 								<view class="text-price text-xl text-orange margin-right">80.00</view>
 							</view>
-							<button class="cu-btn round bg-green sm" @click.stop="addGood('a')">+购物车</button>
+							<view class="cu-avatar bg-green round" @click.stop="addGood('a')">
+								<text class="cuIcon-cart"></text>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -91,7 +96,9 @@
 								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
 								<view class="text-price text-xl text-orange margin-right">80.00</view>
 							</view>
-							<button class="cu-btn round bg-green sm">+购物车</button>
+							<view class="cu-avatar bg-green round" @click.stop="addGood('a')">
+								<text class="cuIcon-cart"></text>
+							</view>
 						</view>
 					</view>
 				</view>

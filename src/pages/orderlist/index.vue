@@ -77,10 +77,10 @@
 			</view>
 		</view> -->
 		<view class="cu-list menu">
-			<view class="cu-item arrow">
+			<view class="cu-item arrow" @click="selectVouchers">
 				<view class="content flex justify-between">
 					<text class="">优惠券</text>
-					<text class="text-grey">满200减50</text>
+					<text class="text-grey">无</text>
 				</view>
 			</view>
 			<view class="cu-form-group">
@@ -179,7 +179,10 @@
 		},
 		methods: {
 			selectAddress() {
-				wx.navigateTo({url: `/pages/addresslist/main`})
+				wx.navigateTo({url: `/pages/selectAddress/main`})
+			},
+			selectVouchers() {
+				wx.navigateTo({url: `/pages/vouchers/main`})
 			},
 			checkGood(index) {
 				this.goodlist[index].check = !this.goodlist[index].check

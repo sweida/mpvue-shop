@@ -48,9 +48,11 @@
 					全选
 				</view>
 				<view class="action text-orange">
-					<view class="text-price text-df text-orange margin-right">共计：{{allPrice}}</view>
+					共计：
+					<text class="text-price text-lg text-orange margin-right">{{allPrice}}</text>
 				</view>
-				<view class="bg-red submit">确认订单</view>
+				<view class="bg-red submit" @click="submitOrder" v-if="allPrice!=0">确认订单</view>
+				<view class="bg-grey light submit" v-else>确认订单</view>
 			</view>
 
 		</div>
@@ -148,6 +150,16 @@
 						this.allPrice += item.amount * item.count
 					})
 				}
+			},
+			submitOrder() {
+				// if (this.allPrice == 0) {
+				// 	wx.showToast({
+				// 		title: ,
+				// 		icon: 'none',
+				// 		duration: 2000,
+				// 	});
+				// }
+				wx.navigateTo({url: '/pages/orderlist/main'})
 			}
 			
 		},
@@ -220,6 +232,9 @@ page, .card-page{
 }
 .cu-bar.tabbar.shop .action{
 	width: 400rpx;
+	text-align: left;
+	padding-left: 30rpx;
+	font-size: 28rpx;
 }
 
 
