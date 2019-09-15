@@ -1,7 +1,7 @@
 <template>
 	<view class="card-page">
 		<div class="contain" v-if="goodlist.length==0">
-			<img src="/static/images/card.png" alt="" class="noList">
+			<img src="/static/images/cart.png" alt="" class="noList">
 			<view class="padding">购物车是空的哦～</view>
 			<button class="cu-btn bg-red">去逛逛</button>
 		</div>
@@ -51,8 +51,8 @@
 					共计：
 					<text class="text-price text-lg text-orange margin-right">{{allPrice}}</text>
 				</view>
-				<view class="bg-red submit" @click="submitOrder" v-if="allPrice!=0">确认订单</view>
-				<view class="bg-grey light submit" v-else>确认订单</view>
+				<view class="bg-green submit" @click="submitOrder" v-if="allPrice!=0">去结算</view>
+				<view class="bg-grey light submit" v-else>去结算</view>
 			</view>
 
 		</div>

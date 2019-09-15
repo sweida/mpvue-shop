@@ -43,7 +43,7 @@
 					<view class="desc">
 						<view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view>
 						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
-						<view class="text-xs text-gray desc"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
+						<view class="text-xs text-gray descp"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
 						<view class="flex align-end justify-between">
 							<view class="margin-top-sm">
 								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
@@ -67,10 +67,10 @@
 					<view class="desc">
 						<view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view>
 						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
-						<view class="text-xs text-gray desc"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
+						<view class="text-xs text-gray descp"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
 						<view class="flex align-end justify-between">
 							<view class="margin-top-sm">
-								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
+								<!-- <view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view> -->
 								<view class="text-price text-xl text-orange margin-right">80.00</view>
 							</view>
 							<view class="cu-avatar bg-green round" @click.stop="addGood('a')">
@@ -90,7 +90,7 @@
 					<view class="desc">
 						<view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view>
 						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
-						<view class="text-xs text-gray desc"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
+						<view class="text-xs text-gray descp"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
 						<view class="flex align-end justify-between">
 							<view class="margin-top-sm">
 								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
@@ -196,7 +196,7 @@
 			TabSelect(e) {
 			},
 			goDetail() {
-				var url = '/pages/detail/main'
+				var url = '/pages/goodDetail/main'
 				wx.navigateTo({url})
 			},
 			addGood(a) {
@@ -267,7 +267,7 @@
 .card-swiper{
 	background: #fff;
 }
-.desc{
+.descp{
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: -webkit-box !important;

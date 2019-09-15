@@ -4,11 +4,11 @@
 		 :autoplay="true" interval="5000" duration="500">
 			<swiper-item v-for="(item,index) in swiperList" :key="index">
 				<image :src="item.url" mode="aspectFill" v-if="item.type=='image'"></image>
-				<video :src="item.url" autoplay loop muted :show-play-btn="false" :controls="false" objectFit="cover" v-if="item.type=='video'"></video>
+				<!-- <video :src="item.url" autoplay loop muted :show-play-btn="false" :controls="false" objectFit="cover" v-if="item.type=='video'"></video> -->
 			</swiper-item>
 		</swiper>
 
-		<view class="cu-bar bg-white solid-bottom margin-top">
+		<view class="cu-bar bg-white solid-bottom margin-top" v-if="false">
 			<view class="cu-item arrow">
 				<view class="action ">
 					<text class="cuIcon-titles text-orange "></text> 商品评论
@@ -22,7 +22,7 @@
 				</view>
 			</view>
 		</view> -->
-		<view class="cu-card dynamic no-card margin-bottom">
+		<view class="cu-card dynamic no-card margin-bottom" v-if="false">
 			<view class="cu-item shadow">
 				<view class="cu-list menu-avatar">
 					<view class="cu-item">
@@ -43,12 +43,6 @@
 					 v-for="(item,index) in isCard?9:1" :key="index">
 					</view>
 				</view>
-				<!-- <view class="text-gray text-sm text-right padding">
-					<text class="cuIcon-attentionfill margin-lr-xs"></text> 10
-					<text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
-					<text class="cuIcon-messagefill margin-lr-xs"></text> 30
-				</view> -->
-
 			</view>
 		</view>
 
@@ -62,35 +56,8 @@
 		<view class="cu-card dynamic no-card">
 			<view class="cu-item shadow">
 			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
-			aaaaaa
 			</view>
 		</view>
-
-
-
-
-
-
-
-
 
 		<view class="cu-bar bg-white tabbar border shop">
 			<button class="action" open-type="contact">
@@ -102,7 +69,7 @@
 			<view class="action text-orange">
 				<view class="cuIcon-favorfill"></view> 已收藏
 			</view>
-			<view class="action">
+			<view class="action" @click="goRouter('card')">
 				<view class="cuIcon-cart">
 					<view class="cu-tag badge">99</view>
 				</view>
@@ -150,6 +117,9 @@
 			};
 		},
 		methods: {
+			goRouter(url) {
+				wx.switchTab({url: `/pages/${url}/main`})
+			}
 		},
 	}
 </script>
