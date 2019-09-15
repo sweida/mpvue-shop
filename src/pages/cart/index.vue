@@ -44,7 +44,7 @@
 					<text class="text-green cuIcon-roundcheckfill" v-if="allCheck"></text>
 					<text class="text-ddd cuIcon-roundcheck" v-else></text>
 				</text>
-				<view class="text-df">
+				<view class="text-df" @click="handleAllCheck">
 					全选
 				</view>
 				<view class="action text-orange">

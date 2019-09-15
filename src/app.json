@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/goodDetail/main",
     "pages/messageDetail/main",
     "pages/message/main",
-    "pages/goodDetail/main",
     "pages/index/main",
     "pages/orderlist/main",
     "pages/vouchers/main",

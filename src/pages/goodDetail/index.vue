@@ -4,24 +4,26 @@
 		 :autoplay="true" interval="5000" duration="500">
 			<swiper-item v-for="(item,index) in swiperList" :key="index">
 				<image :src="item.url" mode="aspectFill" v-if="item.type=='image'"></image>
-				<!-- <video :src="item.url" autoplay loop muted :show-play-btn="false" :controls="false" objectFit="cover" v-if="item.type=='video'"></video> -->
 			</swiper-item>
 		</swiper>
-
-		<view class="cu-bar bg-white solid-bottom margin-top" v-if="false">
-			<view class="cu-item arrow">
-				<view class="action ">
-					<text class="cuIcon-titles text-orange "></text> 商品评论
-				</view>
+		<view class="solid-bottom  padding-sm bg-white">
+			<view class="text-black text-bold text-lg padding-tb-sm">这是标题啊嗷嗷啊啊啊啊啊 啊啊</view>
+			<text class="text-gray text-sm">这是标题啊嗷嗷啊啊啊啊啊 啊啊这是标题啊嗷嗷啊啊啊啊啊 啊啊这是标题啊嗷嗷啊啊啊啊啊 啊啊</text>
+			<view class="flex justify-between padding-top">
+				<text class="text-price text-lg text-red">{{999.33}}</text>
+				<text class="text-sm text-gray">销量 33</text>
 			</view>
 		</view>
-		<!-- <view  class="cu-list menu card-menu margin--top">
-		  <view class="cu-item arrow">
-			  <view class="action ">
-					<text class="cuIcon-titles text-orange "></text> 商品评论
-				</view>
+
+		
+		<view class="cu-bar bg-white solid-bottom margin-top padding-lr" >
+			<view class='cu-tag bg-green text-xs'>参团人员</view>
+			<view class="text-cut">
+				<view class="cu-avatar round sm margin-right-xs" v-for="(item,index) in avatar" :key="index" :style="[{ backgroundImage:'url(' + avatar[index] + ')' }]"></view>
 			</view>
-		</view> -->
+			<view>已有 <text class="text-red">200</text> 人参团</view>
+		</view>
+
 		<view class="cu-card dynamic no-card margin-bottom" v-if="false">
 			<view class="cu-item shadow">
 				<view class="cu-list menu-avatar">
@@ -46,37 +48,47 @@
 			</view>
 		</view>
 
-		<view class="cu-bar bg-white solid-bottom margin-top">
-			<view class="cu-item arrow">
-				<view class="action ">
-					<text class="cuIcon-titles text-orange "></text> 商品详情
+		<scroll-view scroll-x class="bg-white nav margin-top solid-bottom">
+			<view class="flex text-center">
+				<view class="cu-item flex-sub" :class="index==TabCur?'text-green cur':''" v-for="(item,index) in nav" :key="index" @tap="tabSelect(index)" :data-id="index">
+					{{item.name}}
 				</view>
 			</view>
-		</view>
-		<view class="cu-card dynamic no-card">
-			<view class="cu-item shadow">
-			aaaaaa
-			</view>
+		</scroll-view>
+
+		<view class="cu-card no-card padding bg-white" v-if="TabCur==0">
+			aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+			aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+			aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 		</view>
 
+		<view class="cu-card no-card padding bg-white" v-else>
+			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+		</view>
+
+
+
 		<view class="cu-bar bg-white tabbar border shop">
-			<button class="action" open-type="contact">
-				<view class="cuIcon-service text-green">
-					<view class="cu-tag badge"></view>
-				</view>
+			<button class="action bg-white" open-type="contact">
+				<view class="cuIcon-service text-green"></view>
 				客服
 			</button>
-			<view class="action text-orange">
-				<view class="cuIcon-favorfill"></view> 已收藏
+			<view class="action" :class="collect ? 'text-orange' : ''" @click="like">
+				<view class="cuIcon-favorfill"></view> {{collect ? '已收藏' : '收藏'}}
 			</view>
-			<view class="action" @click="goRouter('card')">
+			<view class="action" @click="goTab('cart')">
 				<view class="cuIcon-cart">
 					<view class="cu-tag badge">99</view>
 				</view>
 				购物车
 			</view>
-			<view class="bg-orange submit">加入购物车</view>
-			<view class="bg-red submit">立即抢购</view>
+			<view class="bg-green submit" @click="addGood">加入购物车</view>
+			<view class="bg-orange submit" @click="goRouter('orderlist')">立即购买</view>
 		</view>
 	</view>
 </template>
@@ -85,6 +97,7 @@
 	export default {
 		data() {
 			return {
+				collect: false,
 				swiperList: [{
 					id: 0,
 					type: 'image',
@@ -114,11 +127,46 @@
 					type: 'image',
 					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big99008.jpg'
 				}],
+				avatar: [
+					'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
+					'https://ossweb-img.qq.com/images/lol/web201310/skin/big81005.jpg',
+					'https://ossweb-img.qq.com/images/lol/web201310/skin/big25002.jpg',
+					'https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg',
+					'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
+				],
+				TabCur: 0,
+				scrollLeft: 0,
+				nav: [
+					{
+						id: 1,
+						name: '商品详情',
+					}, {
+						id: 2,
+						name: '规格参数',
+					},
+				]
 			};
 		},
 		methods: {
 			goRouter(url) {
+				wx.navigateTo({url: `/pages/${url}/main`})
+			},
+			goTab(url) {
 				wx.switchTab({url: `/pages/${url}/main`})
+			},
+			tabSelect(index) {
+				this.TabCur = index;
+				this.desc = this.nav[index].desc
+			},
+			like() {
+				this.collect = !this.collect
+				let text = ''
+				this.collect ? text='商品收藏成功！' : text='已取消收藏'
+				wx.showToast({
+					title: text,
+					icon: 'none',
+					duration:2000
+				});
 			}
 		},
 	}

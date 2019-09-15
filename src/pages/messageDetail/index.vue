@@ -35,7 +35,7 @@
 			<text class="text-black">这是食品名称</text>
 		</view>
 		<view class="cu-card article no-card">
-			<view class="cu-item shadow padding-tb good" @click="goDetail('goodDetail')">
+			<view class="cu-item shadow padding-tb good" @click="goRouter('goodDetail')">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
 					 mode="aspectFill"></image>
@@ -128,7 +128,7 @@
 			goTab(url) {
 				wx.switchTab({url: `/pages/${url}/main`})
 			},
-			goDetail(url) {
+			goRouter(url) {
 				wx.navigateTo({url: `/pages/${url}/main`})
 			},
 			addGood() {
