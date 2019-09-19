@@ -1,8 +1,11 @@
 <script>
+import {mapState, mapMutations } from 'vuex'
 
 export default {
   computed: {
-
+    ...mapState([
+      'userInfo'
+    ])
   },
   created () {
     wx.login({
@@ -13,6 +16,7 @@ export default {
           }
           this.$fly.post('/onlogin', params).then(respon => {
             console.log(respon.data, '登录');
+            // wx.setStorageSync('loginData', respon.data)
           })
         } else {
           console.log('登录失败！', res.errMsg)
