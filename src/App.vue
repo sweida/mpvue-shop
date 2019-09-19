@@ -1,6 +1,24 @@
 <script>
+
 export default {
+  computed: {
+
+  },
   created () {
+    wx.login({
+      success:res => {
+        if (res.code) {
+          let params = {
+            code: res.code
+          }
+          this.$fly.post('/onlogin', params).then(respon => {
+            console.log(respon.data, '登录');
+          })
+        } else {
+          console.log('登录失败！', res.errMsg)
+        }
+      }
+    })
     // 调用API从本地缓存中获取数据
     /*
      * 平台 api 差异的处理方式:  api 方法统一挂载到 mpvue 名称空间, 平台判断通过 mpvuePlatform 特征字符串
@@ -9,24 +27,7 @@ export default {
      * 百度：mpvue === swan, mpvuePlatform === 'swan'
      * 支付宝(蚂蚁)：mpvue === my, mpvuePlatform === 'my'
      */
-    wx.login({
-      success (res) {
-        if (res.code) {
-          //发起网络请求
-          wx.request({
-            url: 'http://127.0.0.1:8080/api/v1/onlogin',
-            data: {
-              code: res.code
-            },
-            success(resp) {
-              console.log(resp.data.data, 54545);
-            }
-          })
-        } else {
-          console.log('登录失败！', res.errMsg)
-        }
-      }
-    })
+    
     // let logs
     // if (mpvuePlatform === 'my') {
     //   logs = mpvue.getStorageSync({key: 'logs'}).data || []
