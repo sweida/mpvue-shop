@@ -1,16 +1,17 @@
 {
   "pages": [
+    "pages/personal/main",
+    "pages/login/main",
+    "pages/index/main",
     "pages/goodDetail/main",
     "pages/messageDetail/main",
     "pages/message/main",
-    "pages/index/main",
     "pages/orderlist/main",
     "pages/vouchers/main",
     "pages/selectAddress/main",
     "pages/cart/main",
     "pages/addresslist/main",
     "pages/address/main",
-    "pages/personal/main",
     "pages/counter/main",
     "pages/goods/main"
   ],

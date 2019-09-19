@@ -21,23 +21,21 @@
 				<img src="/static/images/person-bg.png" alt="" width="100%" class="img-bg">
 				<view class="cu-list menu-avatar">
 						<view class="cu-item bg-no">
+							<open-data type="userAvatarUrl"></open-data>
 							<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
 							<view class="content flex-sub text-left">
-								<view>正义天使 凯尔</view>
-								
+								<!-- <view>正义天使 凯尔</view> -->
+								<open-data type="userNickName"></open-data>
 								<view class='cu-tag round bg-black'>
 									<text class="cuIcon-crown text-orange"></text>
 									普通会员
 								</view>
-
-								<!-- <view class="text-gray text-sm flex justify-between">
-									十天前
-									<view class="text-gray text-sm">
-										<text class="cuIcon-attentionfill margin-lr-xs"></text> 10
-										<text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
-										<text class="cuIcon-messagefill margin-lr-xs"></text> 30
-									</view>
-								</view> -->
+							</view>
+						</view>
+						<view class="cu-item bg-no" @click="goRouter('login')">
+							<view class="cu-avatar round lg bg-white"></view>
+							<view class="content flex-sub text-left">
+								<view>立即登录</view>
 							</view>
 						</view>
 					</view>

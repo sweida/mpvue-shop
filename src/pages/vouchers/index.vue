@@ -11,7 +11,7 @@
 
 
 		<view class="text-center">
-			<img src="/static/images/card.png" alt="" class="noList">
+			<img src="/static/images/cart.png" alt="" class="noList">
 			<view class="padding">{{desc}}</view>
 		</view>
 		

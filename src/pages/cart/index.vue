@@ -111,6 +111,30 @@
 				}
 			} 
 		},
+		onLoad () {
+			console.log(44433);
+			// 查看是否授权
+			wx.getSetting({
+				success (res){
+					console.log('获取当前设置1', res)
+					if (res.authSetting['scope.userInfo']) {
+						// 已经授权，可以直接调用 getUserInfo 获取头像昵称
+						wx.getUserInfo({
+							success: function(res) {
+							console.log('获取当前设置', res, res.userInfo)
+							}
+						})
+					} else {
+						console.log('还没登录');
+						wx.navigateTo({url: '/pages/login/main'})
+					}
+				}
+			})
+		},
+		onLaunch() {
+			console.log('onLaunch44433');
+		},
+		
 		methods: {
 			checkGood(index) {
 				this.goodlist[index].check = !this.goodlist[index].check
@@ -121,14 +145,14 @@
 				} else {
 					let that = this
 					wx.showModal({
-                    title: '是否删除该商品？',
-                    content: '',
-                    success(res){
-                        if(res.confirm){
-							that.goodlist.splice(index, 1)
-                        }
-                    }
-                })
+						title: '是否删除该商品？',
+						content: '',
+						success(res){
+							if(res.confirm){
+								that.goodlist.splice(index, 1)
+							}
+						}
+					})
 				}
 			},
 			addCount(index) {

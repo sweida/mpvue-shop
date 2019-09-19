@@ -9,20 +9,38 @@ export default {
      * 百度：mpvue === swan, mpvuePlatform === 'swan'
      * 支付宝(蚂蚁)：mpvue === my, mpvuePlatform === 'my'
      */
-
-    let logs
-    if (mpvuePlatform === 'my') {
-      logs = mpvue.getStorageSync({key: 'logs'}).data || []
-      logs.unshift(Date.now())
-      mpvue.setStorageSync({
-        key: 'logs',
-        data: logs
-      })
-    } else {
-      logs = mpvue.getStorageSync('logs') || []
-      logs.unshift(Date.now())
-      mpvue.setStorageSync('logs', logs)
-    }
+    wx.login({
+      success (res) {
+        if (res.code) {
+          //发起网络请求
+          wx.request({
+            url: 'http://127.0.0.1:8080/api/v1/onlogin',
+            data: {
+              code: res.code
+            },
+            success(resp) {
+              console.log(resp.data.data, 54545);
+            }
+          })
+        } else {
+          console.log('登录失败！', res.errMsg)
+        }
+      }
+    })
+    // let logs
+    // if (mpvuePlatform === 'my') {
+    //   logs = mpvue.getStorageSync({key: 'logs'}).data || []
+    //   logs.unshift(Date.now())
+    //   mpvue.setStorageSync({
+    //     key: 'logs',
+    //     data: logs
+    //   })
+    // } else {
+    //   logs = mpvue.getStorageSync('logs') || []
+    //   logs.unshift(Date.now())
+    //   mpvue.setStorageSync('logs', logs)
+    // }
+    
   },
   log () {
     console.log(`log at:${Date.now()}`)

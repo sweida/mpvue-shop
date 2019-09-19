@@ -19,6 +19,9 @@
 				</view>
 			</swiper-item>
 		</swiper>
+
+		<button open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfoClick">获取权限</button>
+
 		<view class="cu-card no-card">
 
 				<view class="cu-list grid col-4 no-border">
@@ -112,6 +115,7 @@
 	export default {
 		data() {
 			return {
+				canIUse: wx.canIUse('button.open-type.getUserInfo'),
 				cardCur: 0,
 				swiperList: [{
 					id: 0,
@@ -189,10 +193,80 @@
 			};
 		},
 		onLoad() {
+			wx.getUserInfo({
+				success: function(res) {
+					console.log('用户信息', res)
+					var userInfo = res.userInfo
+					var nickName = userInfo.nickName
+					var avatarUrl = userInfo.avatarUrl
+					var gender = userInfo.gender //性别 0：未知、1：男、2：女
+					var province = userInfo.province
+					var city = userInfo.city
+					var country = userInfo.country
+				}
+			})
+			// 查看是否授权
+			wx.getSetting({
+				success (res){
+					console.log('获取当前设置1', res)
+					if (res.authSetting['scope.userInfo']) {
+						// 已经授权，可以直接调用 getUserInfo 获取头像昵称
+						wx.getUserInfo({
+							success: function(res) {
+							console.log('获取当前设置', res, res.userInfo)
+							}
+						})
+					} else {
+
+					}
+				}
+			})
 			this.TowerSwiper('swiperList');
 			// 初始化towerSwiper 传已有的数组名即可
 		},
+		mounted (){
+			// wx.login({
+			// 	success (res) {
+			// 		if (res.code){
+			// 			wx.showModal({
+			// 				title: '是否删除该商品？',
+			// 				content: ''
+			// 			})
+			// 			// 这里可以把code传给后台，后台用此获取openid及session_key
+			// 		}
+			// 	},
+			// })
+		},
 		methods: {
+			getUserInfoClick(){
+				// console.log('click事件首先触发')
+			},
+			bindGetUserInfo(e) {
+				// console.log('回调事件后触发')
+				const self = this;
+				if (e.mp.detail.userInfo){
+					wx.showModal({
+						title: '是否删除该商品？',
+						content: ''
+					})
+					console.log('用户按了允许授权按钮')
+					let { encryptedData,userInfo,iv } = e.mp.detail;
+					// self.$http.post(api,{
+					// 	// 这里的code就是通过wx.login()获取的
+					// 	code:self.code,
+					// 	encryptedData,
+					// 	iv,
+					// }).then(res => {
+					// 	console.log(`后台交互拿回数据:`,res);
+					// 	// 获取到后台重写的session数据，可以通过vuex做本地保存
+					// }).catch(err => {
+					// 	console.log(`api请求出错:`,err);
+					// })  
+				} else {
+					//用户按了拒绝按钮
+					console.log('用户按了拒绝按钮');
+				}
+			},
 			TabSelect(e) {
 			},
 			goDetail() {
