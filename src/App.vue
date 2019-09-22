@@ -20,7 +20,6 @@ export default {
 
 				if (res.authSetting['scope.userInfo']) {
 					console.log('已经登录');
-					this.update({isLogin: true})
 					// 已经授权，可以直接调用 getUserInfo 获取头像昵称
 					wx.getUserInfo({
 						success: (res1) => {
@@ -37,8 +36,14 @@ export default {
 											iv: loginMsg.iv
 										}
 										this.$fly.post('/onlogin', params).then(res3 => {
-											console.log(res3.data, '登录成功');
-											this.update({loginData: res3.data})
+											if (res3.status=='success') {
+												this.update({isLogin: true})
+												console.log(res1.userInfo, 6789);
+												this.update({userInfo: res1.userInfo})
+											} else {
+												this.update({isLogin: false})
+												this.update({userInfo: null})
+											}
 										})
 									} else {
 										console.log('获取openId失败！', res.errMsg)

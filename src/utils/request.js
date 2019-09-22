@@ -53,6 +53,11 @@ fly.interceptors.response.use(
     console.log(err)
     wx.hideLoading()
     if (err) {
+      wx.showToast({
+        title: '网络链接失败',
+        icon: 'none',
+        duration:2000
+      });
       return '请求失败'
     };
   }

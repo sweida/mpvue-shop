@@ -56,14 +56,25 @@ export default {
 								iv
 							}
 							this.$fly.post('/onlogin', params).then(res3 => {
-								console.log(res3.data, '登录成功');
-								this.update({isLogin: true})
-								this.update({loginData: res3.data})
 								this.loading = false
-								wx.navigateBack()
-
-								// 购物车数量
-								this.cartCount()
+								if (res3.status=='success') {
+									this.update({isLogin: true})
+									console.log(res2.userInfo, 678);
+									
+									// this.update({loginData: res3.data})
+									wx.navigateBack()
+									// 购物车数量
+									this.cartCount()
+									console.log(res3.data, '登录成功');
+								} else {
+									this.update({isLogin: false})
+									// this.update({loginData: null})
+									wx.showToast({
+										title: res3.message,
+										icon: 'none',
+										duration:2000
+									});
+								}
 							})
 						} else {
 							console.log('获取openId失败！', res.errMsg)
