@@ -1,6 +1,6 @@
 <template>
 	<view class="card-page">
-		<div class="contain" v-if="cartList.length==0">
+		<div class="contain" v-if="!isLogin || cartList.length==0">
 			<img src="/static/images/cart.png" alt="" class="noList">
 			<view class="padding">购物车是空的哦～</view>
 			<button class="cu-btn bg-red">去逛逛</button>
@@ -123,7 +123,7 @@ export default {
 		}
 	},
 	created() {
-		if (this.isLogin) {
+		if (this.allCount!='0') {
 			wx.setTabBarBadge({
 				index: 3,
 				text: this.allCount
@@ -134,30 +134,12 @@ export default {
 			})
 		}
 	},
-	onLoad () {
-		console.log(44433);
+	onTabItemTap() {
 		// 查看是否授权
-		wx.getSetting({
-			success (res){
-				console.log('获取当前设置1', res)
-				if (res.authSetting['scope.userInfo']) {
-					// 已经授权，可以直接调用 getUserInfo 获取头像昵称
-					wx.getUserInfo({
-						success: function(res) {
-						console.log('获取当前设置', res, res.userInfo)
-						}
-					})
-				} else {
-					console.log('还没登录');
-					wx.navigateTo({url: '/pages/login/main'})
-				}
-			}
-		})
+		if (!this.isLogin) {
+			wx.navigateTo({url: '/pages/login/main'})
+		}
 	},
-	onLaunch() {
-		console.log('onLaunch44433');
-	},
-	
 	methods: {
 		...mapMutations(["update"]),
 		checkGood(index) {
