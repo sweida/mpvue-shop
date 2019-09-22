@@ -44,11 +44,9 @@ export default {
 			wx.navigateBack()
 		},
 		bindGetUserInfo(e) {
-			this.loading = true
-			console.log(e.mp.detail, 222222);
-
 			let { encryptedData,userInfo,iv } = e.mp.detail; 
 			if (userInfo){
+				this.loading = true
 				wx.login({
 					success:res2 => {
 						if (res2.code) {

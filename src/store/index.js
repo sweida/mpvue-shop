@@ -13,7 +13,7 @@ const state = {
   isLogin: false,
   userInfo: {
     nickName: "",
-    avatarUrl: ''
+    avatarUrl: ""
   },
   loginData: {},
   cart: 0,
@@ -40,15 +40,6 @@ const state = {
       img: "ss"
     }
   ]
-  // allAmount: function() {
-  //   console.log(state.cartList, 999);
-
-  //   let sum = 0
-  //   state.cartList.forEach(item => {
-  //     sum += item.amount;
-  //   });
-  //   return sum
-  // }
 };
 
 export default new Vuex.Store({
