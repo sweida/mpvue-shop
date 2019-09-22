@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import {mapState, mapMutations } from 'vuex'
 
 export default {
   data () {
@@ -33,30 +34,63 @@ export default {
   created () {
   },
   methods: {
+    ...mapMutations(["update"]),
     goBack() {
       wx.navigateBack()
     },
     bindGetUserInfo(e) {
-				const self = this;
-				if (e.mp.detail.userInfo){
-          self.loading = true
-          setTimeout(() => {
-            self.loading = false
-          }, 2000)
-          // wx.showToast({
-          //   title: '是否授权',
-          //   icon: 'none',
-          //   duration:2000
-          // });
-					let { encryptedData,userInfo,iv } = e.mp.detail; 
-				} else {
-          wx.showToast({
-            title: '授权失败，为了完整体验，获取更多的优惠活动，需要您的授权',
-            icon: 'none',
-            duration:2000
-          });
-				}
-			},
+      this.loading = true
+      console.log(e.mp.detail, 222222);
+
+      let { encryptedData,userInfo,iv } = e.mp.detail; 
+      if (userInfo){
+        wx.login({
+          success:res2 => {
+            if (res2.code) {
+              let params = {
+                code: res2.code,
+                encryptedData,
+                iv
+              }
+              this.$fly.post('/onlogin', params).then(res3 => {
+                console.log(res3.data, '登录成功');
+                this.update({isLogin: true})
+                this.update({loginData: res3.data})
+                this.loading = false
+                wx.navigateBack()
+
+                // 购物车数量
+                this.cartCount()
+              })
+            } else {
+              console.log('获取openId失败！', res.errMsg)
+            }
+          }
+        })
+      } else {
+        wx.showToast({
+          title: '授权失败，为了完整体验，获取更多的优惠活动，需要您的授权',
+          icon: 'none',
+          duration:2000
+        });
+      }
+    },
+    // 购物车数量
+    cartCount() {
+			let sum = 0
+			this.cartList.forEach(item => {
+				if (item.check) {
+					sum += item.amount
+				}					
+			})
+			if (sum > 0) {
+				wx.setTabBarBadge({
+					index: 3,
+					text: sum.toString()
+				})
+			}
+		}
+
   }
 }
 </script>

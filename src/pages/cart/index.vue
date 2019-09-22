@@ -1,13 +1,13 @@
 <template>
 	<view class="card-page">
-		<div class="contain" v-if="goodlist.length==0">
+		<div class="contain" v-if="cartList.length==0">
 			<img src="/static/images/cart.png" alt="" class="noList">
 			<view class="padding">购物车是空的哦～</view>
 			<button class="cu-btn bg-red">去逛逛</button>
 		</div>
 		<div v-else>
 
-			<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodlist" :key="index">
+			<view class="cu-card article no-card solid-bottom" v-for="(item, index) in cartList" :key="index">
 				<text class="text-xxl margin-left-sm" @click="checkGood(index)">
 					<text class="text-green cuIcon-roundcheckfill" v-if="item.check"></text>
 					<text class="text-ddd cuIcon-roundcheck" v-else></text>
@@ -22,13 +22,13 @@
 							</view>
 							<view class="flex align-end justify-between">
 								<view class="margin-top-sm">
-									<view class="text-price text-xl text-orange margin-right">{{item.amount}}</view>
+									<view class="text-price text-xl text-orange margin-right">{{item.unitPrice}}</view>
 								</view>
 								<view class="button-box">
 									<text class="btn-box" @click="decCount(index)">
 										<text class="lg text-gray cuIcon-move" ></text>
 									</text>
-									<text class="margin-lr-sm">{{item.count}}</text>
+									<text class="margin-lr-sm">{{item.amount}}</text>
 									<text class="btn-box" @click="addCount(index)">
 										<text class="lg text-gray cuIcon-add" ></text>
 									</text>
@@ -60,134 +60,162 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				list: [],
-				goodlist: [
-					{
-						goodname: '这是标题啊啊啊啊啊啊1',
-						check: false,
-						count: 1,
-						amount: 88.90,
-						img: 'ss'
-					}, {
-						goodname: '这是标题啊啊啊啊啊啊2',
-						check: true,
-						count: 3,
-						amount: 88.70,
-						img: 'ss'
-					}, {
-						goodname: '这是标题啊啊啊啊啊啊3',
-						check: true,
-						count: 2,
-						amount: 88.00,
-						img: 'ss'
-					}, 
-				],
-			};
-		},
-		computed: {
-			// 所有价格
-			allPrice: function() {
-				let sum = 0
-				this.goodlist.forEach(item => {
-					if (item.check) {
-						sum += item.amount * item.count
-					}
-						
-				})
-				return sum.toFixed(2)
-			},
-			// 是否全选
-			allCheck: function() {
-				const checkAdult = (item) => {
-					return item.check
+import {mapState, mapMutations } from 'vuex'
+
+export default {
+	data() {
+		return {
+			list: [],
+		};
+	},
+	computed: {
+		...mapState([
+			'isLogin',
+			'cartList'
+		]),
+		// 所有价格
+		allPrice: function() {
+			let sum = 0
+			this.cartList.forEach(item => {
+				if (item.check) {
+					sum += item.amount * item.unitPrice
 				}
-				if (!this.goodlist.every(checkAdult)) {
-					return false
-				} else {
-					return true
-				}
-			} 
-		},
-		onLoad () {
-			console.log(44433);
-			// 查看是否授权
-			wx.getSetting({
-				success (res){
-					console.log('获取当前设置1', res)
-					if (res.authSetting['scope.userInfo']) {
-						// 已经授权，可以直接调用 getUserInfo 获取头像昵称
-						wx.getUserInfo({
-							success: function(res) {
-							console.log('获取当前设置', res, res.userInfo)
-							}
-						})
-					} else {
-						console.log('还没登录');
-						wx.navigateTo({url: '/pages/login/main'})
-					}
-				}
+					
 			})
+			return sum.toFixed(2)
 		},
-		onLaunch() {
-			console.log('onLaunch44433');
+		// 是否全选
+		allCheck: function() {
+			const checkAdult = (item) => {
+				return item.check
+			}
+			if (!this.cartList.every(checkAdult)) {
+				return false
+			} else {
+				return true
+			}
 		},
-		
-		methods: {
-			checkGood(index) {
-				this.goodlist[index].check = !this.goodlist[index].check
-			},
-			decCount(index) {
-				if (this.goodlist[index].count > 1) {
-					this.goodlist[index].count--
-				} else {
-					let that = this
-					wx.showModal({
-						title: '是否删除该商品？',
-						content: '',
-						success(res){
-							if(res.confirm){
-								that.goodlist.splice(index, 1)
-							}
+		// 购物车数量
+		allCount: function() {
+			if (!this.isLogin) {
+				wx.hideTabBarRedDot({
+					index: 3
+				})
+				return '0'
+			}
+			let sum = 0
+			this.cartList.forEach(item => {
+				if (item.check) {
+					sum += item.amount
+				}					
+			})
+			if (sum > 0) {
+				wx.setTabBarBadge({
+					index: 3,
+					text: sum.toString()
+				})
+			} else {
+				wx.hideTabBarRedDot({
+					index: 3
+				})
+			}
+			return sum.toString()
+		}
+	},
+	created() {
+		if (this.isLogin) {
+			wx.setTabBarBadge({
+				index: 3,
+				text: this.allCount
+			})
+		} else {
+			wx.hideTabBarRedDot({
+				index: 3,
+			})
+		}
+	},
+	onLoad () {
+		console.log(44433);
+		// 查看是否授权
+		wx.getSetting({
+			success (res){
+				console.log('获取当前设置1', res)
+				if (res.authSetting['scope.userInfo']) {
+					// 已经授权，可以直接调用 getUserInfo 获取头像昵称
+					wx.getUserInfo({
+						success: function(res) {
+						console.log('获取当前设置', res, res.userInfo)
 						}
 					})
-				}
-			},
-			addCount(index) {
-				this.goodlist[index].count++
-			},
-			handleAllCheck() {
-				if (this.allCheck) {
-					this.allPrice = 0
-					this.goodlist.forEach(item => {
-						item.check = false
-						this.allCheck = false
-						this.allPrice += 0
-					})
 				} else {
-					this.allPrice = 0
-					this.goodlist.forEach(item => {
-						item.check = true
-						this.allCheck = true
-						this.allPrice += item.amount * item.count
-					})
+					console.log('还没登录');
+					wx.navigateTo({url: '/pages/login/main'})
 				}
-			},
-			submitOrder() {
-				// if (this.allPrice == 0) {
-				// 	wx.showToast({
-				// 		title: ,
-				// 		icon: 'none',
-				// 		duration: 2000,
-				// 	});
-				// }
-				wx.navigateTo({url: '/pages/orderlist/main'})
 			}
-			
+		})
+	},
+	onLaunch() {
+		console.log('onLaunch44433');
+	},
+	
+	methods: {
+		...mapMutations(["update"]),
+		checkGood(index) {
+			this.cartList[index].check = !this.cartList[index].check
+			this.update(this.cartList)
 		},
-	}
+		decCount(index) {
+			if (this.cartList[index].amount > 1) {
+				this.cartList[index].amount--
+			} else {
+				let that = this
+				wx.showModal({
+					title: '是否删除该商品？',
+					content: '',
+					success(res){
+						if(res.confirm){
+							that.cartList.splice(index, 1)
+						}
+					}
+				})
+			}
+			this.update(this.cartList)
+		},
+		addCount(index) {
+			this.cartList[index].amount++
+			this.update(this.cartList)
+		},
+		handleAllCheck() {
+			if (this.allCheck) {
+				this.allPrice = 0
+				this.cartList.forEach(item => {
+					item.check = false
+					this.allCheck = false
+					this.allPrice += 0
+				})
+			} else {
+				this.allPrice = 0
+				this.cartList.forEach(item => {
+					item.check = true
+					this.allCheck = true
+					this.allPrice += item.amount * item.count
+				})
+			}
+			this.update(this.cartList)
+		},
+		submitOrder() {
+			// if (this.allPrice == 0) {
+			// 	wx.showToast({
+			// 		title: ,
+			// 		icon: 'none',
+			// 		duration: 2000,
+			// 	});
+			// }
+			wx.navigateTo({url: '/pages/orderlist/main'})
+		}
+		
+	},
+}
 </script>
 
 <style>

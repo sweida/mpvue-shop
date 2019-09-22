@@ -2,27 +2,56 @@
 import {mapState, mapMutations } from 'vuex'
 
 export default {
-  computed: {
-    ...mapState([
-      'userInfo'
-    ])
-  },
-  created () {
-    wx.login({
-      success:res => {
-        if (res.code) {
-          let params = {
-            code: res.code
-          }
-          this.$fly.post('/onlogin', params).then(respon => {
-            console.log(respon.data, '登录');
-            // wx.setStorageSync('loginData', respon.data)
-          })
-        } else {
-          console.log('登录失败！', res.errMsg)
-        }
-      }
-    })
+	computed: {
+	...mapState([
+		'userInfo'
+	]),
+
+	},
+	created () {
+		/*
+			每次打开页面先查询是否登录
+			1.如果已经登录就获取code，再获取用户信息
+			2. 如果没有登录就不操作
+		*/
+		wx.getSetting({
+			success: (res) => {
+				let loginMsg = {}
+
+				if (res.authSetting['scope.userInfo']) {
+					console.log('已经登录');
+					this.update({isLogin: true})
+					// 已经授权，可以直接调用 getUserInfo 获取头像昵称
+					wx.getUserInfo({
+						success: (res1) => {
+							this.update({userInfo: res1.userInfo})
+							loginMsg = res1
+							console.log('获取当前设置', res1, res1.userInfo)
+
+							wx.login({
+								success:res2 => {
+									if (res2.code) {
+										let params = {
+											code: res2.code,
+											encryptedData: loginMsg.encryptedData,
+											iv: loginMsg.iv
+										}
+										this.$fly.post('/onlogin', params).then(res3 => {
+											console.log(res3.data, '登录成功');
+											this.update({loginData: res3.data})
+										})
+									} else {
+										console.log('获取openId失败！', res.errMsg)
+									}
+								}
+							})
+						}
+					})
+
+
+				}
+			}
+		})
     // 调用API从本地缓存中获取数据
     /*
      * 平台 api 差异的处理方式:  api 方法统一挂载到 mpvue 名称空间, 平台判断通过 mpvuePlatform 特征字符串
@@ -45,10 +74,21 @@ export default {
     //   logs.unshift(Date.now())
     //   mpvue.setStorageSync('logs', logs)
     // }
+    console.log(this.userInfo, 5555);
+    
     
   },
   log () {
     console.log(`log at:${Date.now()}`)
+  },
+  methods: {
+    ...mapMutations(["update"]),
+
+		// updates(){
+		// 	this.update({ 
+		// 		userInfo: {cc: 'ddd'}
+		// 	});
+		// }
   }
 }
 </script>
