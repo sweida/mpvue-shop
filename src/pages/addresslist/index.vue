@@ -1,9 +1,10 @@
 <template>
-	<view class="addresslist margin-top">
-        <view v-if="addressList.length==0">
-            还没有收货地址
-        </view>
-        <view v-else>
+	<view class="addresslist ">
+        <div class="contain" v-if="addressList.length==0">
+			<img src="/static/images/address.png" alt="" class="noList">
+			<view class="padding">还没有收货地址</view>
+		</div>
+        <view class="margin-top address-page" v-else>
             <view class=" bg-white solid-bottom" v-for="(item, index) in addressList" :key="index">
                 <view class="cu-item">
                     <view class="padding-lr padding-top">
@@ -13,17 +14,17 @@
                         </view>
                         <view class="text-cut text-grey padding-top-sm">
                             <text class='cuIcon-locationfill text-orange'></text>
-                            {{item.address}}
+                            {{item.city}} {{item.address}}
                         </view> 
                         <view class="flex">
                             <view class="flex-sub cu-form-group" style="padding-left: 0">
-                                <checkbox class='round' :checked="item.isdefault" value="B" @click="checkAddress(item.id, index)">
+                                <radio :class="item.active ? 'checked':''" :checked="item.active" @click="checkAddress(item.id, index, item.active)">
                                     <view class="title padding-left-xs">设为默认</view>
-                                </checkbox>
+                                </radio>
                             </view>
                             <view class="flex-twice flex justify-end align-center" style="font-size: 20px">
                                 <text class='cuIcon-edit margin-left' @click="goRouter('address')"></text>
-                                <text class='cuIcon-delete margin-left' @click="deleleAdd"></text>
+                                <text class='cuIcon-delete margin-left' @click="handleDelele(item.id, index)"></text>
                             </view>
                         </view>
                     </view>
@@ -41,54 +42,65 @@
 </template>
 
 <script>
+import {mapState, mapMutations } from 'vuex'
+ 
 	export default {
 		data() {
 			return {
-                addressList: [
-                    {
-                        id: 1,
-                        name: '收货人姓名',
-                        address: '广东省广州市天河区 珠江新城 开花国际XXXXXXXXXXXXXXX',
-                        phone: '13798889888',
-                        isdefault: true,
-                    }, {
-                        id: 2,
-                        name: '收货人姓名',
-                        address: '广东省广州市天河区 珠江新城 开花国际XXXXXXXXX',
-                        phone: '13798889888',
-                        isdefault: false,
-                    }, {
-                        id: 3,
-                        name: '收货人姓名',
-                        address: '广东省广州市天河区 珠江新城 开花国际XXXXXXXXX',
-                        phone: '13798889888',
-                        isdefault: false,
-                    }
-                ],
+                addressList: [],
 				region: ['广东省', '广州市', '海珠区'],
 			};
-		},
+        },
+        computed: {
+            ...mapState([
+                'userInfo'
+            ]),
+        },
+        onShow() {
+            this.getAddressList()
+        },
 		methods: {
+            getAddressList() {
+                this.$fly.post('/address/list', {user_id: this.userInfo.openid}).then(res => {
+                    res.data.forEach(item => {
+                        item.city = item.city.split(',').join('')
+                    })
+                    this.addressList = res.data
+                })
+            },
 			RegionChange(e) {
 				this.region = e.mp.detail.value
             },
-            checkAddress(id, index) {
-                this.addressList.forEach(item => {
-                    item.isdefault = false
+            checkAddress(id, index, active) {
+                if (active) {
+                    return false
+                }
+
+                let params = {
+                    id,
+                    user_id: this.userInfo.openid
+                }
+                this.$fly.post('/address/setactive', params).then(res => {
+                    if (res.status == 'success') {
+                        this.addressList.forEach(item => {
+                            item.active = null
+                        })
+                        this.addressList[index].active = 'active'
+                    }
                 })
-                this.addressList[index].isdefault = true
             },
             goRouter(url) {			
                 wx.navigateTo({url: `/pages/${url}/main`})
             },
-            deleleAdd() {
+            handleDelele(id, index) {
                 wx.showModal({
                     title: '是否删除该地址？',
                     content: '',
-                    success(res){
-                        if(res.confirm){
-                            console.log('删除');
-                            
+                    success: resp => {
+                        if(resp.confirm){
+                            this.$fly.post('/address/delete', {id}).then(res => {
+                                this.addressList.splice(index, 1)
+                            })
                         }
                     }
                 })
@@ -98,7 +110,21 @@
 </script>
 
 <style>
-.addresslist{
+page, .addresslist{
+	height: 100%;
+}
+.contain{
+	height: 100%;
+    background: #fff;
+	text-align: center;
+}
+.noList{
+	width: 614rpx;
+	height: 352rpx;
+	margin-top: 200rpx;
+}
+
+.address-page{
     padding-bottom: 160rpx;
 }
 .cu-form-group .title {

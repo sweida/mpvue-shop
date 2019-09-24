@@ -3,10 +3,9 @@ import {mapState, mapMutations } from 'vuex'
 
 export default {
 	computed: {
-	...mapState([
-		'userInfo'
-	]),
-
+		...mapState([
+			'userInfo'
+		]),
 	},
 	created () {
 		/*
@@ -39,7 +38,8 @@ export default {
 											if (res3.status=='success') {
 												this.update({isLogin: true})
 												console.log(res1.userInfo, 6789);
-												this.update({userInfo: res1.userInfo})
+												// this.update({userInfo: res3.userInfo})
+												this.update({userInfo: res3.data})
 											} else {
 												this.update({isLogin: false})
 												this.update({userInfo: null})

@@ -1,8 +1,10 @@
 {
   "pages": [
     "pages/personal/main",
-    "pages/login/main",
+    "pages/addresslist/main",
     "pages/index/main",
+    "pages/address/main",
+    "pages/login/main",
     "pages/goodDetail/main",
     "pages/messageDetail/main",
     "pages/message/main",
@@ -10,8 +12,6 @@
     "pages/vouchers/main",
     "pages/selectAddress/main",
     "pages/cart/main",
-    "pages/addresslist/main",
-    "pages/address/main",
     "pages/counter/main",
     "pages/goods/main"
   ],

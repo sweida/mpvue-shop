@@ -75,7 +75,9 @@ export default {
 										duration:2000
 									});
 								}
-							})
+							}).catch(
+								this.loading = false
+							)
 						} else {
 							console.log('获取openId失败！', res.errMsg)
 						}
