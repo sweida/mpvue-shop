@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/createOrder/main",
     "pages/personal/main",
     "pages/addresslist/main",
     "pages/index/main",

@@ -193,7 +193,7 @@ export default {
 			// 		duration: 2000,
 			// 	});
 			// }
-			wx.navigateTo({url: '/pages/orderlist/main'})
+			wx.navigateTo({url: '/pages/createOrder/main'})
 		}
 		
 	},
