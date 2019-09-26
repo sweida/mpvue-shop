@@ -38,6 +38,31 @@
 
 		</view>
 
+		<!-- 商品 -->
+		<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodList" :key="index">
+			<view class="cu-item shadow padding-tb" @click="goDetail(item.id)">
+				<view class="content">
+					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
+					 mode="aspectFill"></image>
+					<view class="desc">
+						<view class="text-cut" style="width: 450rpx">{{item.title}}</view>
+						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
+						<view class="text-xs text-gray descp">{{item.desc}}</view>
+						<view class="flex align-end justify-between">
+							<view class="margin-top-sm">
+								<view class="cu-tag bg-yellow light sm radius" v-if="item.vipprice">会员价: ¥{{item.vipprice}}</view>
+								<view class="text-price text-xl text-orange margin-right">{{item.price}}</view>
+							</view>
+							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood('a')">
+								<text class="cuIcon-cart"></text>
+							</view>
+							<!-- <button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button> -->
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+
 		<view class="cu-card article no-card solid-bottom">
 			<view class="cu-item shadow padding-tb" @click="goDetail('a')">
 				<view class="content">
@@ -189,38 +214,41 @@
 					color: 'olive',
 					badge: 22,
 					name: '已配送'
-				}]
+				}],
+				goodList: []
 			};
 		},
 		onLoad() {
-			wx.getUserInfo({
-				success: function(res) {
-					console.log('用户信息', res)
-					var userInfo = res.userInfo
-					var nickName = userInfo.nickName
-					var avatarUrl = userInfo.avatarUrl
-					var gender = userInfo.gender //性别 0：未知、1：男、2：女
-					var province = userInfo.province
-					var city = userInfo.city
-					var country = userInfo.country
-				}
-			})
-			// 查看是否授权
-			wx.getSetting({
-				success (res){
-					console.log('获取当前设置1', res)
-					if (res.authSetting['scope.userInfo']) {
-						// 已经授权，可以直接调用 getUserInfo 获取头像昵称
-						wx.getUserInfo({
-							success: function(res) {
-							console.log('获取当前设置', res, res.userInfo)
-							}
-						})
-					} else {
+			this.getGoodList();
 
-					}
-				}
-			})
+			// wx.getUserInfo({
+			// 	success: function(res) {
+			// 		console.log('用户信息', res)
+			// 		var userInfo = res.userInfo
+			// 		var nickName = userInfo.nickName
+			// 		var avatarUrl = userInfo.avatarUrl
+			// 		var gender = userInfo.gender //性别 0：未知、1：男、2：女
+			// 		var province = userInfo.province
+			// 		var city = userInfo.city
+			// 		var country = userInfo.country
+			// 	}
+			// })
+			// // 查看是否授权
+			// wx.getSetting({
+			// 	success (res){
+			// 		console.log('获取当前设置1', res)
+			// 		if (res.authSetting['scope.userInfo']) {
+			// 			// 已经授权，可以直接调用 getUserInfo 获取头像昵称
+			// 			wx.getUserInfo({
+			// 				success: function(res) {
+			// 				console.log('获取当前设置', res, res.userInfo)
+			// 				}
+			// 			})
+			// 		} else {
+
+			// 		}
+			// 	}
+			// })
 			this.TowerSwiper('swiperList');
 			// 初始化towerSwiper 传已有的数组名即可
 		},
@@ -238,6 +266,11 @@
 			// })
 		},
 		methods: {
+			getGoodList() {
+                this.$fly.post('/good/list').then(res => {
+                    this.goodList = res.data.data
+                })
+            },
 			getUserInfoClick(){
 				// console.log('click事件首先触发')
 			},
@@ -269,9 +302,9 @@
 			},
 			TabSelect(e) {
 			},
-			goDetail() {
-				var url = '/pages/goodDetail/main'
-				wx.navigateTo({url})
+			goDetail(id) {
+				// let url = '/pages/goodDetail/main'
+				wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
 			},
 			addGood(a) {
 				// event.stopPropagation()

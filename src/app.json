@@ -1,9 +1,9 @@
 {
   "pages": [
-    "pages/createOrder/main",
-    "pages/personal/main",
-    "pages/addresslist/main",
     "pages/index/main",
+    "pages/personal/main",
+    "pages/createOrder/main",
+    "pages/addresslist/main",
     "pages/address/main",
     "pages/login/main",
     "pages/goodDetail/main",

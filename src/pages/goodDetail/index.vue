@@ -134,6 +134,7 @@
 					'https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg',
 					'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
 				],
+				goodDetail: {},
 				TabCur: 0,
 				scrollLeft: 0,
 				nav: [
@@ -147,7 +148,17 @@
 				]
 			};
 		},
+		onLoad(options) {
+			if (options.id) {
+				this.getGoodDetail(options.id)
+			}
+		},
 		methods: {
+			getGoodDetail(id) {
+                this.$fly.post('/good/detail', {id:id}).then(res => {
+                    this.goodDetail = res.data
+                })
+            },
 			goRouter(url) {
 				wx.navigateTo({url: `/pages/${url}/main`})
 			},
