@@ -8,10 +8,10 @@ const host = "http://127.0.0.1:8080/api/v1";
 
 // 添加请求拦截器
 fly.interceptors.request.use(request => {
-	wx.showLoading({
-		title: "加载中",
-		mask: true
-	});
+	// wx.showLoading({
+	// 	title: "加载中",
+	// 	mask: true
+	// });
 	console.log(request, 'request');
 
 	request.headers = {
@@ -44,7 +44,7 @@ fly.interceptors.request.use(request => {
 // 添加响应拦截器
 fly.interceptors.response.use(
 	response => {
-		wx.hideLoading();
+		// wx.hideLoading();
 		if (response.data.status == "success") {
 			return response.data; // 请求成功之后将返回值返回
 		} else {
@@ -58,7 +58,7 @@ fly.interceptors.response.use(
 	err => {
 		// 请求出错，根据返回状态码判断出错原因
 		console.log(err);
-		wx.hideLoading();
+		// wx.hideLoading();
 		if (err) {
 		wx.showToast({
 			title: err.response.data.code + "错误：" + err.response.data.message,

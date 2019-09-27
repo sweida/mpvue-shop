@@ -61,7 +61,7 @@ export default {
 									this.update({isLogin: true})
 									console.log(res2.userInfo, 678);
 									
-									// this.update({loginData: res3.data})
+									this.update({userInfo: res3.data})
 									wx.navigateBack()
 									// 购物车数量
 									this.cartCount()
@@ -79,7 +79,12 @@ export default {
 								this.loading = false
 							)
 						} else {
-							console.log('获取openId失败！', res.errMsg)
+							wx.showToast({
+								title: '获取openId失败！' + res.errMsg,
+								icon: 'none',
+								duration:2000
+							});
+							// console.log('获取openId失败！', res.errMsg)
 						}
 					}
 				})

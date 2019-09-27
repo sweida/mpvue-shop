@@ -54,10 +54,16 @@
 					<text class="text-grey">地址管理</text>
 				</view>
 			</view>
+			<view class="cu-item arrow" @click="goRouter('addresslist')">
+				<view class="content">
+					<text class="cuIcon-circlefill text-grey"></text>
+					<text class="text-grey">收藏商品（{{userInfo.likeCount}}）</text>
+				</view>
+			</view>
 			<view class="cu-item arrow">
 				<button class="cu-btn content" open-type="contact">
-					<text class="cuIcon-btn text-olive"></text>
-					<text class="text-grey">领取中心</text>
+					<text class="cuIcon-service text-olive"></text>
+					<text class="text-grey">联系客服</text>
 				</button>
 			</view>
 			<view class="cu-item arrow">

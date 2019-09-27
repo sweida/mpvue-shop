@@ -7,11 +7,15 @@
 			</swiper-item>
 		</swiper>
 		<view class="solid-bottom  padding-sm bg-white">
-			<view class="text-black text-bold text-lg padding-tb-sm">这是标题啊嗷嗷啊啊啊啊啊 啊啊</view>
-			<text class="text-gray text-sm">这是标题啊嗷嗷啊啊啊啊啊 啊啊这是标题啊嗷嗷啊啊啊啊啊 啊啊这是标题啊嗷嗷啊啊啊啊啊 啊啊</text>
+			<view class="text-black text-bold text-lg padding-tb-sm">{{goodDetail.title}}</view>
+			<text class="text-gray text-sm">{{goodDetail.desc}}</text>
 			<view class="flex justify-between padding-top">
-				<text class="text-price text-lg text-red">{{999.33}}</text>
-				<text class="text-sm text-gray">销量 33</text>
+				<view>
+					<text class="text-price text-lg text-red">{{goodDetail.price}}</text>
+					<view class="cu-tag bg-yellow light sm radius margin-left-sm" v-if="goodDetail.vipprice">会员价: ¥{{goodDetail.vipprice}}</view>
+				</view>
+
+				<text class="text-sm text-gray">销量 {{goodDetail.buys}}</text>
 			</view>
 		</view>
 
@@ -21,7 +25,7 @@
 			<view class="text-cut">
 				<view class="cu-avatar round sm margin-right-xs" v-for="(item,index) in avatar" :key="index" :style="[{ backgroundImage:'url(' + avatar[index] + ')' }]"></view>
 			</view>
-			<view>已有 <text class="text-red">200</text> 人参团</view>
+			<view>已有 <text class="text-red">{{goodDetail.buys}}</text> 人参团</view>
 		</view>
 
 		<view class="cu-card dynamic no-card margin-bottom" v-if="false">
@@ -57,9 +61,7 @@
 		</scroll-view>
 
 		<view class="cu-card no-card padding bg-white" v-if="TabCur==0">
-			aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-			aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-			aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+			{{goodDetail.detail}}
 		</view>
 
 		<view class="cu-card no-card padding bg-white" v-else>
@@ -78,8 +80,8 @@
 				<view class="cuIcon-service text-green"></view>
 				客服
 			</button>
-			<view class="action" :class="collect ? 'text-orange' : ''" @click="like">
-				<view class="cuIcon-favorfill"></view> {{collect ? '已收藏' : '收藏'}}
+			<view class="action" :class="goodDetail.collect ? 'text-orange' : ''" @click="like(goodDetail.collect)">
+				<view class="cuIcon-favorfill"></view> {{goodDetail.collect ? '已收藏' : '收藏'}}
 			</view>
 			<view class="action" @click="goTab('cart')">
 				<view class="cuIcon-cart">
@@ -94,6 +96,8 @@
 </template>
 
 <script>
+import {mapState, mapMutations } from 'vuex'
+
 	export default {
 		data() {
 			return {
@@ -148,6 +152,12 @@
 				]
 			};
 		},
+		computed: {
+			...mapState([
+				'isLogin',
+				'userInfo'
+			]),
+		},
 		onLoad(options) {
 			if (options.id) {
 				this.getGoodDetail(options.id)
@@ -155,7 +165,11 @@
 		},
 		methods: {
 			getGoodDetail(id) {
-                this.$fly.post('/good/detail', {id:id}).then(res => {
+				let params = {
+					id: id,
+					user_id: this.userInfo.openid
+				}
+                this.$fly.post('/good/detail', params).then(res => {
                     this.goodDetail = res.data
                 })
             },
@@ -169,15 +183,30 @@
 				this.TabCur = index;
 				this.desc = this.nav[index].desc
 			},
-			like() {
-				this.collect = !this.collect
-				let text = ''
-				this.collect ? text='商品收藏成功！' : text='已取消收藏'
-				wx.showToast({
-					title: text,
-					icon: 'none',
-					duration:2000
-				});
+			like(active) {
+				if (!this.isLogin) {
+					return false
+				}
+
+				// acitve falss 没收藏
+				let params = {
+					good_id: this.goodDetail.id,
+					user_id: this.userInfo.openid,
+					active: active
+				}
+				this.$fly.post('/good/likeGood', params).then(res => {
+					console.log(res, 333);
+					
+					this.goodDetail.collect = !this.goodDetail.collect
+					let text = ''
+					this.goodDetail.collect ? text='商品收藏成功！' : text='已取消收藏'
+					wx.showToast({
+						title: text,
+						icon: 'none',
+						duration:2000
+					});
+				})
+
 			}
 		},
 	}
@@ -195,5 +224,8 @@
 	bottom: 0;
 	width: 100%;
 }
-
+.bg-yellow.light{
+	color: #a5673f;
+	background-color: #f8e470;
+}
 </style>

@@ -20,8 +20,6 @@
 			</swiper-item>
 		</swiper>
 
-		<button open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfoClick">获取权限</button>
-
 		<view class="cu-card no-card">
 
 				<view class="cu-list grid col-4 no-border">
@@ -50,10 +48,10 @@
 						<view class="text-xs text-gray descp">{{item.desc}}</view>
 						<view class="flex align-end justify-between">
 							<view class="margin-top-sm">
-								<view class="cu-tag bg-yellow light sm radius" v-if="item.vipprice">会员价: ¥{{item.vipprice}}</view>
-								<view class="text-price text-xl text-orange margin-right">{{item.price}}</view>
+								<view class="cu-tag bg-yellow light sm radius" v-if="item.vipprice">会员价: ¥{{item.vipprice | keepTwoNum}}</view>
+								<view class="text-price text-xl text-orange margin-right">{{item.price | keepTwoNum}}</view>
 							</view>
-							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood('a')">
+							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(item)">
 								<text class="cuIcon-cart"></text>
 							</view>
 							<!-- <button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button> -->
@@ -137,237 +135,247 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				canIUse: wx.canIUse('button.open-type.getUserInfo'),
-				cardCur: 0,
-				swiperList: [{
-					id: 0,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg'
-				}, {
-					id: 1,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big37006.jpg',
-				}, {
-					id: 2,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big39000.jpg'
-				}, {
-					id: 3,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg'
-				}, {
-					id: 4,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big25011.jpg'
-				}, {
-					id: 5,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big21016.jpg'
-				}, {
-					id: 6,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big99008.jpg'
-				}],
-				dotStyle: false,
-				towerStart: 0,
-				direction: '',
-				cuIconList: [{
-					cuIcon: 'cardboardfill',
-					color: 'red',
-					badge: 120,
-					name: '待付款'
-				}, {
-					cuIcon: 'recordfill',
-					color: 'orange',
-					badge: 1,
-					name: '待配送'
-				}, {
-					cuIcon: 'picfill',
-					color: 'yellow',
-					badge: 0,
-					name: '待提货'
-				}, {
-					cuIcon: 'noticefill',
-					color: 'olive',
-					badge: 22,
-					name: '已配送'
-				}, {
-					cuIcon: 'cardboardfill',
-					color: 'red',
-					badge: 120,
-					name: '待付款'
-				}, {
-					cuIcon: 'recordfill',
-					color: 'orange',
-					badge: 1,
-					name: '待配送'
-				}, {
-					cuIcon: 'picfill',
-					color: 'yellow',
-					badge: 0,
-					name: '待提货'
-				}, {
-					cuIcon: 'noticefill',
-					color: 'olive',
-					badge: 22,
-					name: '已配送'
-				}],
-				goodList: []
-			};
-		},
-		onLoad() {
-			this.getGoodList();
+import {mapState, mapMutations } from 'vuex'
 
-			// wx.getUserInfo({
-			// 	success: function(res) {
-			// 		console.log('用户信息', res)
-			// 		var userInfo = res.userInfo
-			// 		var nickName = userInfo.nickName
-			// 		var avatarUrl = userInfo.avatarUrl
-			// 		var gender = userInfo.gender //性别 0：未知、1：男、2：女
-			// 		var province = userInfo.province
-			// 		var city = userInfo.city
-			// 		var country = userInfo.country
-			// 	}
+export default {
+	data() {
+		return {
+			canIUse: wx.canIUse('button.open-type.getUserInfo'),
+			cardCur: 0,
+			swiperList: [{
+				id: 0,
+				type: 'image',
+				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg'
+			}, {
+				id: 1,
+				type: 'image',
+				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big37006.jpg',
+			}, {
+				id: 2,
+				type: 'image',
+				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big39000.jpg'
+			}, {
+				id: 3,
+				type: 'image',
+				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg'
+			}, {
+				id: 4,
+				type: 'image',
+				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big25011.jpg'
+			}, {
+				id: 5,
+				type: 'image',
+				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big21016.jpg'
+			}, {
+				id: 6,
+				type: 'image',
+				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big99008.jpg'
+			}],
+			dotStyle: false,
+			towerStart: 0,
+			direction: '',
+			cuIconList: [{
+				cuIcon: 'cardboardfill',
+				color: 'red',
+				badge: 120,
+				name: '待付款'
+			}, {
+				cuIcon: 'recordfill',
+				color: 'orange',
+				badge: 1,
+				name: '待配送'
+			}, {
+				cuIcon: 'picfill',
+				color: 'yellow',
+				badge: 0,
+				name: '待提货'
+			}, {
+				cuIcon: 'noticefill',
+				color: 'olive',
+				badge: 22,
+				name: '已配送'
+			}, {
+				cuIcon: 'cardboardfill',
+				color: 'red',
+				badge: 120,
+				name: '待付款'
+			}, {
+				cuIcon: 'recordfill',
+				color: 'orange',
+				badge: 1,
+				name: '待配送'
+			}, {
+				cuIcon: 'picfill',
+				color: 'yellow',
+				badge: 0,
+				name: '待提货'
+			}, {
+				cuIcon: 'noticefill',
+				color: 'olive',
+				badge: 22,
+				name: '已配送'
+			}],
+			goodList: []
+		};
+	},
+	filters:{
+		keepTwoNum:function(value){
+			value = Number(value)
+			return value.toFixed(3)
+		}
+	},
+	onLoad() {
+		this.getGoodList();
+		this.TowerSwiper('swiperList');
+		// 初始化towerSwiper 传已有的数组名即可
+	},
+	mounted (){
+		// wx.login({
+		// 	success (res) {
+		// 		if (res.code){
+		// 			wx.showModal({
+		// 				title: '是否删除该商品？',
+		// 				content: ''
+		// 			})
+		// 			// 这里可以把code传给后台，后台用此获取openid及session_key
+		// 		}
+		// 	},
+		// })
+	},
+	computed: {
+		...mapState([
+			'cartList'
+		]),
+	},
+	methods: {
+		...mapMutations(["update"]),
+		getGoodList() {
+			this.$fly.post('/good/list').then(res => {
+				this.goodList = res.data.data
+			})
+		},
+		getUserInfoClick(){
+			// console.log('click事件首先触发')
+		},
+		bindGetUserInfo(e) {
+			// console.log('回调事件后触发')
+			const self = this;
+			if (e.mp.detail.userInfo){
+				wx.showModal({
+					title: '是否删除该商品？',
+					content: ''
+				})
+				console.log('用户按了允许授权按钮')
+				let { encryptedData,userInfo,iv } = e.mp.detail;
+				// self.$http.post(api,{
+				// 	// 这里的code就是通过wx.login()获取的
+				// 	code:self.code,
+				// 	encryptedData,
+				// 	iv,
+				// }).then(res => {
+				// 	console.log(`后台交互拿回数据:`,res);
+				// 	// 获取到后台重写的session数据，可以通过vuex做本地保存
+				// }).catch(err => {
+				// 	console.log(`api请求出错:`,err);
+				// })  
+			} else {
+				//用户按了拒绝按钮
+				console.log('用户按了拒绝按钮');
+			}
+		},
+		TabSelect(e) {
+		},
+		goDetail(id) {
+			// let url = '/pages/goodDetail/main'
+			wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
+		},
+		addGood(good) {
+			let goodIndex = this.cartList.findIndex((item)=>{
+				return item.id == good.id
+			})
+
+			// 商品不存在
+			if (goodIndex == -1) {
+				good.count = 1
+				good.check = true
+				this.cartList.push(good)
+			//foodIndex存在 ,更新数据
+			} else {
+				this.cartList[goodIndex].count++
+			}
+			this.$set( this.cartList, this.cartList)
+			this.$forceUpdate()
+			this.update({cartList: this.cartList})
+
+			// wx.setTabBarBadge({
+			// 	index: 3,
+			// 	text: this.allCount
 			// })
-			// // 查看是否授权
-			// wx.getSetting({
-			// 	success (res){
-			// 		console.log('获取当前设置1', res)
-			// 		if (res.authSetting['scope.userInfo']) {
-			// 			// 已经授权，可以直接调用 getUserInfo 获取头像昵称
-			// 			wx.getUserInfo({
-			// 				success: function(res) {
-			// 				console.log('获取当前设置', res, res.userInfo)
-			// 				}
-			// 			})
-			// 		} else {
+			wx.showToast({
+				title: '已加入购物车',
+				icon: 'none',
+				duration:1200
+			});
 
-			// 		}
-			// 	}
-			// })
-			this.TowerSwiper('swiperList');
-			// 初始化towerSwiper 传已有的数组名即可
+			console.log(this.cartList, 44);
+			
 		},
-		mounted (){
-			// wx.login({
-			// 	success (res) {
-			// 		if (res.code){
-			// 			wx.showModal({
-			// 				title: '是否删除该商品？',
-			// 				content: ''
-			// 			})
-			// 			// 这里可以把code传给后台，后台用此获取openid及session_key
-			// 		}
-			// 	},
-			// })
+		DotStyle(e) {
+			this.dotStyle = e.detail.value
 		},
-		methods: {
-			getGoodList() {
-                this.$fly.post('/good/list').then(res => {
-                    this.goodList = res.data.data
-                })
-            },
-			getUserInfoClick(){
-				// console.log('click事件首先触发')
-			},
-			bindGetUserInfo(e) {
-				// console.log('回调事件后触发')
-				const self = this;
-				if (e.mp.detail.userInfo){
-					wx.showModal({
-						title: '是否删除该商品？',
-						content: ''
-					})
-					console.log('用户按了允许授权按钮')
-					let { encryptedData,userInfo,iv } = e.mp.detail;
-					// self.$http.post(api,{
-					// 	// 这里的code就是通过wx.login()获取的
-					// 	code:self.code,
-					// 	encryptedData,
-					// 	iv,
-					// }).then(res => {
-					// 	console.log(`后台交互拿回数据:`,res);
-					// 	// 获取到后台重写的session数据，可以通过vuex做本地保存
-					// }).catch(err => {
-					// 	console.log(`api请求出错:`,err);
-					// })  
-				} else {
-					//用户按了拒绝按钮
-					console.log('用户按了拒绝按钮');
-				}
-			},
-			TabSelect(e) {
-			},
-			goDetail(id) {
-				// let url = '/pages/goodDetail/main'
-				wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
-			},
-			addGood(a) {
-				// event.stopPropagation()
-				console.log(a, 444);
-				// return false
-				
-			},
-			DotStyle(e) {
-				this.dotStyle = e.detail.value
-			},
-			// cardSwiper
-			cardSwiper(e) {
-				this.cardCur = e.mp.detail.current
-			},
-			// towerSwiper
-			// 初始化towerSwiper
-			TowerSwiper(name) {
-				let list = this[name];
-				for (let i = 0; i < list.length; i++) {
-					list[i].zIndex = parseInt(list.length / 2) + 1 - Math.abs(i - parseInt(list.length / 2))
-					list[i].mLeft = i - parseInt(list.length / 2)
-				}
-				this.swiperList = list
-			},
-
-			// towerSwiper触摸开始
-			TowerStart(e) {
-				this.towerStart = e.touches[0].pageX
-			},
-
-			// towerSwiper计算方向
-			TowerMove(e) {
-				this.direction = e.touches[0].pageX - this.towerStart > 0 ? 'right' : 'left'
-			},
-
-			// towerSwiper计算滚动
-			TowerEnd(e) {
-				let direction = this.direction;
-				let list = this.swiperList;
-				if (direction == 'right') {
-					let mLeft = list[0].mLeft;
-					let zIndex = list[0].zIndex;
-					for (let i = 1; i < this.swiperList.length; i++) {
-						this.swiperList[i - 1].mLeft = this.swiperList[i].mLeft
-						this.swiperList[i - 1].zIndex = this.swiperList[i].zIndex
-					}
-					this.swiperList[list.length - 1].mLeft = mLeft;
-					this.swiperList[list.length - 1].zIndex = zIndex;
-				} else {
-					let mLeft = list[list.length - 1].mLeft;
-					let zIndex = list[list.length - 1].zIndex;
-					for (let i = this.swiperList.length - 1; i > 0; i--) {
-						this.swiperList[i].mLeft = this.swiperList[i - 1].mLeft
-						this.swiperList[i].zIndex = this.swiperList[i - 1].zIndex
-					}
-					this.swiperList[0].mLeft = mLeft;
-					this.swiperList[0].zIndex = zIndex;
-				}
-				this.direction = ""
-				this.swiperList = this.swiperList
-			},
+		// cardSwiper
+		cardSwiper(e) {
+			this.cardCur = e.mp.detail.current
 		},
-	}
+		// towerSwiper
+		// 初始化towerSwiper
+		TowerSwiper(name) {
+			let list = this[name];
+			for (let i = 0; i < list.length; i++) {
+				list[i].zIndex = parseInt(list.length / 2) + 1 - Math.abs(i - parseInt(list.length / 2))
+				list[i].mLeft = i - parseInt(list.length / 2)
+			}
+			this.swiperList = list
+		},
+
+		// towerSwiper触摸开始
+		TowerStart(e) {
+			this.towerStart = e.touches[0].pageX
+		},
+
+		// towerSwiper计算方向
+		TowerMove(e) {
+			this.direction = e.touches[0].pageX - this.towerStart > 0 ? 'right' : 'left'
+		},
+
+		// towerSwiper计算滚动
+		TowerEnd(e) {
+			let direction = this.direction;
+			let list = this.swiperList;
+			if (direction == 'right') {
+				let mLeft = list[0].mLeft;
+				let zIndex = list[0].zIndex;
+				for (let i = 1; i < this.swiperList.length; i++) {
+					this.swiperList[i - 1].mLeft = this.swiperList[i].mLeft
+					this.swiperList[i - 1].zIndex = this.swiperList[i].zIndex
+				}
+				this.swiperList[list.length - 1].mLeft = mLeft;
+				this.swiperList[list.length - 1].zIndex = zIndex;
+			} else {
+				let mLeft = list[list.length - 1].mLeft;
+				let zIndex = list[list.length - 1].zIndex;
+				for (let i = this.swiperList.length - 1; i > 0; i--) {
+					this.swiperList[i].mLeft = this.swiperList[i - 1].mLeft
+					this.swiperList[i].zIndex = this.swiperList[i - 1].zIndex
+				}
+				this.swiperList[0].mLeft = mLeft;
+				this.swiperList[0].zIndex = zIndex;
+			}
+			this.direction = ""
+			this.swiperList = this.swiperList
+		},
+	},
+}
 </script>
 
 <style>

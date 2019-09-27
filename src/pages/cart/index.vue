@@ -18,17 +18,17 @@
 						mode="aspectFill"></image>
 						<view class="desc">
 							<view class="titles"> 
-								{{item.goodname}}
+								{{item.title}}
 							</view>
 							<view class="flex align-end justify-between">
 								<view class="margin-top-sm">
-									<view class="text-price text-xl text-orange margin-right">{{item.unitPrice}}</view>
+									<view class="text-price text-xl text-orange margin-right">{{item.price}}</view>
 								</view>
 								<view class="button-box">
 									<text class="btn-box" @click="decCount(index)">
 										<text class="lg text-gray cuIcon-move" ></text>
 									</text>
-									<text class="margin-lr-sm">{{item.amount}}</text>
+									<text class="margin-lr-sm">{{item.count}}</text>
 									<text class="btn-box" @click="addCount(index)">
 										<text class="lg text-gray cuIcon-add" ></text>
 									</text>
@@ -65,7 +65,6 @@ import {mapState, mapMutations } from 'vuex'
 export default {
 	data() {
 		return {
-			list: [],
 		};
 	},
 	computed: {
@@ -78,7 +77,7 @@ export default {
 			let sum = 0
 			this.cartList.forEach(item => {
 				if (item.check) {
-					sum += item.amount * item.unitPrice
+					sum += item.count * item.price
 				}
 					
 			})
@@ -106,7 +105,7 @@ export default {
 			let sum = 0
 			this.cartList.forEach(item => {
 				if (item.check) {
-					sum += item.amount
+					sum += item.count
 				}					
 			})
 			if (sum > 0) {
@@ -144,11 +143,12 @@ export default {
 		...mapMutations(["update"]),
 		checkGood(index) {
 			this.cartList[index].check = !this.cartList[index].check
+			this.$forceUpdate(this.cartList)
 			this.update(this.cartList)
 		},
 		decCount(index) {
-			if (this.cartList[index].amount > 1) {
-				this.cartList[index].amount--
+			if (this.cartList[index].count > 1) {
+				this.cartList[index].count--
 			} else {
 				let that = this
 				wx.showModal({
@@ -161,28 +161,30 @@ export default {
 					}
 				})
 			}
+			this.$forceUpdate(this.cartList)
 			this.update(this.cartList)
 		},
 		addCount(index) {
-			this.cartList[index].amount++
+			console.log(index, this.cartList);
+			
+			this.cartList[index].count++
+			this.$forceUpdate(this.cartList)
 			this.update(this.cartList)
 		},
 		handleAllCheck() {
+			this.allCheck = !this.allCheck
+			this.allPrice = 0
 			if (this.allCheck) {
-				this.allPrice = 0
 				this.cartList.forEach(item => {
 					item.check = false
-					this.allCheck = false
-					this.allPrice += 0
 				})
 			} else {
-				this.allPrice = 0
 				this.cartList.forEach(item => {
 					item.check = true
-					this.allCheck = true
-					this.allPrice += item.amount * item.count
+					this.allPrice += item.price * item.count
 				})
 			}
+			this.$forceUpdate(this.cartList)
 			this.update(this.cartList)
 		},
 		submitOrder() {

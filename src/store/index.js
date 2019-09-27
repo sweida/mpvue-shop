@@ -17,7 +17,8 @@ const state = {
   },
   loginData: {},
   cart: 0,
-  cartList: [
+  cartList: [],
+  a: [
     {
       goodname: "这是标题啊啊啊啊啊啊1",
       check: false,
