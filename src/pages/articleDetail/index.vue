@@ -4,20 +4,22 @@
 			<view class="image">
 				<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
 				mode="widthFix"></image>
+				<!-- <image :src="article.img"
+				mode="widthFix"></image> -->
 			</view>
 			<view class="solid-bottom text-xl padding text-center">
-				<text class="text-black text-bold">这是标题啊嗷嗷啊啊啊啊啊 啊啊</text>
+				<text class="text-black text-bold">{{article.title}}</text>
 			</view>
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="cu-item flex align-center">
 					<view class="margin-left-sm">
 						<text class="cuIcon-appreciatefill "></text>
-						<view>{{avatarTotal}}</view>
+						<view>{{likeList.length}}</view>
 					</view>
 					<view class="text-cut">
-						<view class="cu-avatar round sm margin-right-xs" v-for="(item,index) in avatar" :key="index" :style="[{ backgroundImage:'url(' + avatar[index] + ')' }]"></view>
+						<view class="cu-avatar round sm margin-right-xs" v-for="(item,index) in likeList" :key="index" :style="[{ backgroundImage:'url(' + item.avatarUrl + ')' }]"></view>
 					</view>
-					<text v-if="avatarTotal>10">...</text>
+					<text v-if="likeList.length>10">...</text>
 				</view>
 			</view>
 
@@ -32,21 +34,21 @@
 			</view>
 		</view>
 		<view class="text-sm padding-sm bg-white">
-			<text class="text-black">这是食品名称</text>
+			<text class="text-black">{{article.desc}}</text>
 		</view>
-		<view class="cu-card article no-card">
-			<view class="cu-item shadow padding-tb good" @click="goRouter('goodDetail')">
+		<view class="cu-card article no-card" v-if="article.good">
+			<view class="cu-item shadow padding-tb good" @click="goGoodDetail(article.good.id)">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
 					 mode="aspectFill"></image>
 					<view class="desc">
-						<view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view>
-						<view class="text-xs text-gray descp"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
+						<view class="text-cut" style="width: 450rpx">{{article.good.title}}</view>
+						<view class="text-xs text-gray descp">{{article.good.desc}}</view>
 						<view class="flex align-end justify-between">
 							<view class="margin-top-sm">
-								<view class="text-price text-xl text-orange margin-right">80.00</view>
+								<view class="text-price text-xl text-orange margin-right">{{article.good.price}}</view>
 							</view>
-							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood('a')">
+							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(article.good)">
 								<text class="cuIcon-cart"></text>
 							</view>
 						</view>
@@ -56,20 +58,18 @@
 		</view>
 		<view class="cu-card dynamic no-card">
 			<view class="cu-item shadow padding">
-				这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文
-				这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文
-				这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文这是正文
+				{{article.content}}
 			</view>
 		</view>
 		<!-- 底部菜单 -->
 		<view class="cu-bar tabbar shadow flex justify-between bg-white text-xxl text-black">
-			<view class="cuIcon-appreciatefill margin-left-xl icon">
-				<view class="cu-tag badge">{{avatarTotal}}</view>
+			<view class="cuIcon-appreciatefill margin-left-xl icon" :class="article.islike ? 'text-orange' : ''" @click="handleLike(article.islike)">
+				<view class="cu-tag badge">{{likeList.length}}</view>
 			</view>
 			<!-- <text class="cuIcon-appreciatefill margin-left-xl"></text> -->
 			<text class="cuIcon-share"></text>
 			<view class="cuIcon-cart margin-right-xl icon" @click="goTab('cart')">
-				<view class="cu-tag badge">{{avatarTotal}}</view>
+				<view class="cu-tag badge">{{cartCount}}</view>
 			</view>
 		</view>
 		
@@ -77,9 +77,15 @@
 </template>
 
 <script>
+import {mapState, mapMutations } from 'vuex'
+
 	export default {
 		data() {
 			return {
+				article: '',
+				likeList: '',
+				cartCount: '',
+				good: '',
 				swiperList: [{
 					id: 0,
 					type: 'image',
@@ -124,13 +130,65 @@
 				],
 			};
 		},
+		computed: {
+            ...mapState([
+                'userInfo'
+            ]),
+		},
+		onLoad(options) {
+			console.log(options.id, '文章id');
+			
+			this.getArticleDetail(options.id)
+			this.getLikeList(options.id)
+			this.cartCount = 8
+		},
 		methods: {
+			getArticleDetail(id) {
+				let params = {
+					id: id,
+					user_id: this.userInfo.openid
+				}
+				this.$fly.post('/article/detail', params).then(res => {
+					console.log(res, 55);
+					this.article = res.data
+				})
+			},
 			goTab(url) {
 				wx.switchTab({url: `/pages/${url}/main`})
 			},
-			goRouter(url) {
-				wx.navigateTo({url: `/pages/${url}/main`})
+			goGoodDetail(id) {
+				wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
 			},
+			handleLike(active) {
+				let params = {
+					article_id: this.article.id,
+					user_id: this.userInfo.openid,
+					active: active
+				}
+				this.$fly.post('/article/like', params).then(res => {
+					console.log(res, 55);
+					this.article.islike = !this.article.islike
+					let text = ''
+					this.article.islike ? text='点赞成功！' : text='已取消点赞'
+					wx.showToast({
+						title: text,
+						icon: 'none',
+						duration:2000
+					});
+					this.getLikeList(this.article.id)
+				})
+			},
+			// 点赞列表
+			getLikeList(id) {
+				let params = {
+					article_id: id,
+				}
+				this.$fly.post('/article/likelist', params).then(res => {
+					console.log(res, 55);
+					this.likeList = res.data
+				})
+			},
+			// 加入购物车
 			addGood() {
 				
 			}

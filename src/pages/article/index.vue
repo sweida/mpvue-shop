@@ -8,13 +8,13 @@
 		</view>
 
 		<scroll-view scroll-x class="bg-white nav" scroll-with-animation :scroll-left="scrollLeft">
-			<view class="cu-item" :class="index==TabCur?'text-green cur':''" v-for="(item,index) in 10" :key="index" @tap="tabSelect" :data-id="index">
-				Tab{{index}}
+			<view class="cu-item" :class="index==TabCur?'text-green cur':''" v-for="(item,index) in classifys" :key="index" @tap="tabSelect" :data-id="index">
+				{{item}}
 			</view>
 		</scroll-view>
 
 		<view class="grid col-2 padding-xs">
-			<view class="cu-card case padding-xs" v-for="(item, index) in messageList" :key="index" @click="goRouter(item.id)">
+			<view class="cu-card case padding-xs" v-for="(item, index) in articleList" :key="index" @click="goRouter(item.id)">
 				<view class="cu-item shadow">
 					<view class="image">
 						<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
@@ -25,8 +25,8 @@
 						<text class="text-cut padding-xs">{{item.title}}</text>
 					</view>
 					<view class="content text-gray text-sm flex justify-end padding-sm">
-						<text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.watch}}
-						<text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.likes}}
+						<text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.clicks}}
+						<text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.like_count}}
 					</view>
 				</view>
 			</view>
@@ -40,33 +40,8 @@
 		data() {
 			return {
 				cardCur: 0,
-				messageList: [
-					{
-						id:1,
-						title: '我已天理为凭，踏入这片荒芜，不再受凡',
-						label: '分类',
-						watch: 103,
-						likes: 23,
-					}, {
-						id:1,
-						title: '我已天理为凭，踏入这片荒芜，不再受凡',
-						label: '分类',
-						watch: 103,
-						likes: 23,
-					}, {
-						id:1,
-						title: '我已天理为凭，踏入这片荒芜，不再受凡',
-						label: '分类',
-						watch: 103,
-						likes: 23,
-					}, {
-						id:1,
-						title: '我已天理为凭，踏入这片荒芜，不再受凡',
-						label: '分类',
-						watch: 103,
-						likes: 23,
-					}, 
-				],
+				classifys: [],
+				articleList: [],
 				TabCur: 0,
 				scrollLeft: 0,
 				index: 0,
@@ -93,10 +68,23 @@
 				],
 			};
 		},
-
+		onLoad() {
+			this.getArticleList()
+			this.getArticleClassify()
+		},
 		methods: {
 			goRouter(id) {
-				wx.navigateTo({url: '/pages/messageDetail/main'})
+				wx.navigateTo({url: `/pages/articleDetail/main?id=${id}`})
+			},
+			getArticleList() {
+				this.$fly.post('/article/list').then(res => {
+					this.articleList = res.data.data
+				})
+			},
+			getArticleClassify() {
+				this.$fly.get('/article/classify').then(res => {
+					this.classifys = res.data
+				})
 			},
 			tabSelect(index) {
 				this.index = index

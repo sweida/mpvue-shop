@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/article/main",
     "pages/cart/main",
     "pages/selectAddress/main",
     "pages/index/main",
@@ -9,8 +10,7 @@
     "pages/addresslist/main",
     "pages/address/main",
     "pages/goodDetail/main",
-    "pages/messageDetail/main",
-    "pages/message/main",
+    "pages/articleDetail/main",
     "pages/orderlist/main",
     "pages/vouchers/main",
     "pages/counter/main",
@@ -40,7 +40,7 @@
       "selectedIconPath": "static/tabs/goods-active.png"
     }, {
       "text": "吃什么",
-      "pagePath": "pages/message/main",
+      "pagePath": "pages/article/main",
       "iconPath": "static/tabs/message.png",
       "selectedIconPath": "static/tabs/message-active.png"
     }, {
