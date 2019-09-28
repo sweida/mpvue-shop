@@ -1,6 +1,10 @@
 <template>
-	<view class="selectAddress margin-top">
-        <view>
+	<view class="addresslist">
+        <div class="contain" v-if="addressList.length==0">
+			<img src="/static/images/address.png" alt="" class="noList">
+			<view class="padding">还没有收货地址</view>
+		</div>
+        <view class="margin-top address-page" v-else>
             <view class="cu-card article no-card bg-white solid-bottom" v-for="(item, index) in addressList" :key="index" @click="selectAdd(item, index)">
                 <text class="text-xxl margin-left-sm" >
                     <text class="text-green cuIcon-roundcheckfill" v-if="item.active"></text>
@@ -14,11 +18,11 @@
                         </view>
                         <view class="text-gray padding-top-sm detailAddress">
                             <text class='cuIcon-locationfill text-orange'></text>
-                            {{item.city + ' ' + item.address}}
+                            {{item.newCity + ' ' + item.address}}
                         </view> 
                     </view>
                 </view>
-                <view class="text-xl padding-right-sm" @click.stop="edit(item.id, index)">
+                <view class="text-xl padding-right-sm" @click.stop="edit(item)">
                     <text class='cuIcon-edit'></text>
                 </view>
             </view>
@@ -45,7 +49,7 @@ import {mapState, mapMutations } from 'vuex'
 				'userInfo'
             ]),
         },
-        onLoad() {
+        onShow() {
             this.getAddressList()
         },
 		methods: {
@@ -53,7 +57,7 @@ import {mapState, mapMutations } from 'vuex'
             getAddressList() {
                 this.$fly.post('/address/list', {user_id: this.userInfo.openid}).then(res => {
                     res.data.forEach(item => {
-                        item.city = item.city.split(',').join('')
+                        item.newCity = item.city.split(',').join('')
                     })
                     this.addressList = res.data
 
@@ -67,6 +71,9 @@ import {mapState, mapMutations } from 'vuex'
                     })
                 })
             },
+            goRouter(url) {			                
+                wx.navigateTo({url: `/pages/${url}/main`})
+            },
             selectAdd(data, index) {
                 this.addressList.forEach(item => {
                     item.active = null
@@ -79,15 +86,31 @@ import {mapState, mapMutations } from 'vuex'
                     wx.navigateBack()
                 }, 400)
             },
-            edit(id, index) {
-                wx.navigateTo({url: `/pages/address/main`})
+            edit(item) {
+                wx.navigateTo({url: `/pages/address/main?edit=true&item=${JSON.stringify(item)}`})
             }
 		},
 	}
 </script>
 
 <style>
-.selectAddress .article{
+page, .addresslist{
+	height: 100%;
+}
+.contain{
+	height: 100%;
+    background: #fff;
+	text-align: center;
+}
+.noList{
+	width: 614rpx;
+	height: 352rpx;
+	margin-top: 200rpx;
+}
+.address-page{
+    padding-bottom: 160rpx;
+}
+.address-page .article{
     display: flex;
     align-items: center;
 }

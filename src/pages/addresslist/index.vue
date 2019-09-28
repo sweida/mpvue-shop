@@ -14,7 +14,7 @@
                         </view>
                         <view class="text-cut text-grey padding-top-sm">
                             <text class='cuIcon-locationfill text-orange'></text>
-                            {{item.city}} {{item.address}}
+                            {{item.newCity}} {{item.address}}
                         </view> 
                         <view class="flex">
                             <view class="flex-sub cu-form-group" style="padding-left: 0">
@@ -23,7 +23,7 @@
                                 </radio>
                             </view>
                             <view class="flex-twice flex justify-end align-center" style="font-size: 20px">
-                                <text class='cuIcon-edit margin-left' @click="goRouter('address')"></text>
+                                <text class='cuIcon-edit margin-left' @click="edit(item)"></text>
                                 <text class='cuIcon-delete margin-left' @click="handleDelele(item.id, index)"></text>
                             </view>
                         </view>
@@ -60,10 +60,11 @@ import {mapState, mapMutations } from 'vuex'
             this.getAddressList()
         },
 		methods: {
+            ...mapMutations(["update"]),
             getAddressList() {
                 this.$fly.post('/address/list', {user_id: this.userInfo.openid}).then(res => {
                     res.data.forEach(item => {
-                        item.city = item.city.split(',').join('')
+                        item.newCity = item.city.split(',').join('')
                     })
                     this.addressList = res.data
                 })
@@ -86,11 +87,21 @@ import {mapState, mapMutations } from 'vuex'
                             item.active = null
                         })
                         this.addressList[index].active = 'active'
+                        this.userInfo.defaultAddress = this.addressList[index]
+                        this.update({userInfo: this.userInfo})
+                        wx.showToast({
+							title: '设置成功！',
+							icon: 'success',
+							duration: 2000,
+						});
                     }
                 })
             },
             goRouter(url) {			
                 wx.navigateTo({url: `/pages/${url}/main`})
+            },
+            edit(item) {
+                wx.navigateTo({url: `/pages/address/main?edit=true&item=${JSON.stringify(item)}`})
             },
             handleDelele(id, index) {
                 wx.showModal({

@@ -29,10 +29,8 @@
 		</form>
 
 		<view class="padding flex flex-direction margin-top-lg">
-			<button class="cu-btn bg-green lg round" @click="handleAdd">保存地址</button>
+			<button class="cu-btn bg-green lg round" @click="handleSubmit">{{isEdit ? '保存地址' : '新增地址'}}</button>
 		</view>
-
-
 
 	</view>
 </template>
@@ -44,6 +42,7 @@ import {mapState, mapMutations } from 'vuex'
 		data() {
 			return {
 				region: ['广东省', '广州市', '海珠区'],
+				isEdit: false,
 				formData: {
 					name: '',
 					phone: '',
@@ -59,11 +58,20 @@ import {mapState, mapMutations } from 'vuex'
                 'userInfo'
             ]),
 		},
-		onLoad(){
-			// 清空页面数据
-			Object.assign(this.$data, this.$options.data())
+		onLoad(options){
+			console.log(options, 43);
+			if (options.edit=='true') {
+				this.isEdit = true
+				this.formData = JSON.parse(options.item)
+				this.region = JSON.parse(options.item).city.split(',')
+				console.log(this.formData, JSON.parse(options.item), 34);
+			} else {
+				// 清空页面数据
+				Object.assign(this.$data, this.$options.data())
+			}
 		},
 		methods: {
+			...mapMutations(["update"]),
 			SwitchA(e) {
 				this.formData.check = !this.formData.check
 				this.formData.active = this.formData.check ? 'active' : null
@@ -71,26 +79,36 @@ import {mapState, mapMutations } from 'vuex'
 			RegionChange(e) {
 				this.region = e.mp.detail.value
 			},
-			handleAdd() {
+			// 添加
+			handleSubmit() {
+				let url = '/address/add'
+				if (this.isEdit) {
+					url = 'address/edit'
+				}
+
 				this.formData.city = this.region.join(',')
 				
 				let params = {
 					user_id: this.userInfo.openid,
 					...this.formData
 				}
-				this.$fly.post('/address/add', params).then(res => {
+				this.$fly.post(url, params).then(res => {
 					if (res.status == 'success') {
 						wx.showToast({
 							title: res.message,
 							icon: 'success',
 							duration: 2000,
 						});
+						if (this.formData.active) {
+							this.userInfo.defaultAddress = this.formData
+							this.update({userInfo: this.userInfo})
+						}
 						setTimeout(() => {
 							wx.navigateBack()
 						},1500)
 					} else {
 						wx.showToast({
-							title: res.message,
+							title: '错误:' + res.message,
 							icon: 'none',
 							duration: 2000
 						});
