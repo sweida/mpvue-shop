@@ -22,25 +22,32 @@ const state = {
     {
       goodname: "这是标题啊啊啊啊啊啊1",
       check: false,
-      amount: 1,
-      unitPrice: 88.9,
+      count: 1,
+      price: 88.9,
       img: "ss"
     },
     {
       goodname: "这是标题啊啊啊啊啊啊2",
       check: true,
-      amount: 6,
-      unitPrice: 88.7,
+      count: 6,
+      price: 88.7,
       img: "ss"
     },
     {
       goodname: "这是标题啊啊啊啊啊啊3",
       check: true,
-      amount: 2,
-      unitPrice: 88.0,
+      count: 2,
+      price: 88.0,
       img: "ss"
     }
-  ]
+  ],
+  cartCount: () => {
+    let sum = 0
+    state.cartList.forEach(item => {
+      sum += item.count;
+    });
+    return sum
+  } 
 };
 
 export default new Vuex.Store({

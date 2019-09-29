@@ -8,7 +8,7 @@
 		</view>
 
 		<scroll-view scroll-x class="bg-white nav" scroll-with-animation :scroll-left="scrollLeft">
-			<view class="cu-item" :class="index==TabCur?'text-green cur':''" v-for="(item,index) in classifys" :key="index" @tap="tabSelect" :data-id="index">
+			<view class="cu-item" :class="index==TabCur?'text-green cur':''" v-for="(item,index) in classifys" :key="index" @tap="tabSelect(index)" :data-id="index">
 				{{item}}
 			</view>
 		</scroll-view>
@@ -69,26 +69,33 @@
 			};
 		},
 		onLoad() {
-			this.getArticleList()
 			this.getArticleClassify()
 		},
 		methods: {
 			goRouter(id) {
 				wx.navigateTo({url: `/pages/articleDetail/main?id=${id}`})
 			},
-			getArticleList() {
-				this.$fly.post('/article/list').then(res => {
+			// 还没写分页，20篇一页
+			getArticleList(classify) {
+				let params = {
+					classify: classify
+				}
+				this.$fly.post('/article/list', params).then(res => {
 					this.articleList = res.data.data
 				})
 			},
 			getArticleClassify() {
 				this.$fly.get('/article/classify').then(res => {
 					this.classifys = res.data
+					this.getArticleList(this.classifys[0])
 				})
 			},
 			tabSelect(index) {
 				this.index = index
 				this.TabCur = index;
+				this.getArticleList(this.classifys[index])
+
+				
 				// this.desc = this.nav[index].desc
 			}
 		},

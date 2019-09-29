@@ -84,7 +84,6 @@ import {mapState, mapMutations } from 'vuex'
 			return {
 				article: '',
 				likeList: '',
-				cartCount: '',
 				good: '',
 				swiperList: [{
 					id: 0,
@@ -132,15 +131,24 @@ import {mapState, mapMutations } from 'vuex'
 		},
 		computed: {
             ...mapState([
-                'userInfo'
-            ]),
+				'userInfo',
+				'cartList'
+			]),
+			cartCount: function() {
+				let sum = 0
+				this.cartList.forEach(item => {
+					if (item.check) {
+						sum += item.count
+					}
+				});
+				return sum
+			}
 		},
 		onLoad(options) {
 			console.log(options.id, '文章id');
 			
 			this.getArticleDetail(options.id)
 			this.getLikeList(options.id)
-			this.cartCount = 8
 		},
 		methods: {
 			getArticleDetail(id) {

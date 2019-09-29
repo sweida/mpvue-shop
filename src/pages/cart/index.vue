@@ -70,7 +70,8 @@ export default {
 	computed: {
 		...mapState([
 			'isLogin',
-			'cartList'
+			'cartList',
+			'cartCount'
 		]),
 		// 所有价格
 		allPrice: function() {
@@ -132,8 +133,10 @@ export default {
 				index: 3,
 			})
 		}
+		console.log(this.cartCount(), 123);
+
 	},
-	onTabItemTap() {
+	onTabItemTap() {		
 		// 查看是否授权
 		if (!this.isLogin) {
 			wx.navigateTo({url: '/pages/login/main'})

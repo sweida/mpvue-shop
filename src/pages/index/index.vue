@@ -60,76 +60,6 @@
 				</view>
 			</view>
 		</view>
-
-		<view class="cu-card article no-card solid-bottom">
-			<view class="cu-item shadow padding-tb" @click="goDetail('a')">
-				<view class="content">
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-					 mode="aspectFill"></image>
-					<view class="desc">
-						<view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view>
-						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
-						<view class="text-xs text-gray descp"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
-						<view class="flex align-end justify-between">
-							<view class="margin-top-sm">
-								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
-								<view class="text-price text-xl text-orange margin-right">80.00</view>
-							</view>
-							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood('a')">
-								<text class="cuIcon-cart"></text>
-							</view>
-							<!-- <button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button> -->
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
-
-		<view class="cu-card article no-card solid-bottom">
-			<view class="cu-item shadow padding-tb">
-				<view class="content">
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-					 mode="aspectFill"></image>
-					<view class="desc">
-						<view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view>
-						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
-						<view class="text-xs text-gray descp"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
-						<view class="flex align-end justify-between">
-							<view class="margin-top-sm">
-								<!-- <view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view> -->
-								<view class="text-price text-xl text-orange margin-right">80.00</view>
-							</view>
-							<view class="cu-avatar bg-green round" @click.stop="addGood('a')">
-								<text class="cuIcon-cart"></text>
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
-
-		<view class="cu-card article no-card solid-bottom">
-			<view class="cu-item shadow padding-tb">
-				<view class="content">
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-					 mode="aspectFill"></image>
-					<view class="desc">
-						<view class="text-cut" style="width: 450rpx">这是标题啊啊啊啊嗷嗷这是标题啊啊啊啊嗷嗷</view>
-						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
-						<view class="text-xs text-gray descp"> 折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！真正的恩典因不完整而美丽，因情感而真诚，因脆弱而自由！</view>
-						<view class="flex align-end justify-between">
-							<view class="margin-top-sm">
-								<view class="cu-tag bg-yellow light sm radius">会员价: ¥77.00</view>
-								<view class="text-price text-xl text-orange margin-right">80.00</view>
-							</view>
-							<view class="cu-avatar bg-green round" @click.stop="addGood('a')">
-								<text class="cuIcon-cart"></text>
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
 		
 	</view>
 </template>
@@ -254,35 +184,6 @@ export default {
 				this.goodList = res.data.data
 			})
 		},
-		getUserInfoClick(){
-			// console.log('click事件首先触发')
-		},
-		bindGetUserInfo(e) {
-			// console.log('回调事件后触发')
-			const self = this;
-			if (e.mp.detail.userInfo){
-				wx.showModal({
-					title: '是否删除该商品？',
-					content: ''
-				})
-				console.log('用户按了允许授权按钮')
-				let { encryptedData,userInfo,iv } = e.mp.detail;
-				// self.$http.post(api,{
-				// 	// 这里的code就是通过wx.login()获取的
-				// 	code:self.code,
-				// 	encryptedData,
-				// 	iv,
-				// }).then(res => {
-				// 	console.log(`后台交互拿回数据:`,res);
-				// 	// 获取到后台重写的session数据，可以通过vuex做本地保存
-				// }).catch(err => {
-				// 	console.log(`api请求出错:`,err);
-				// })  
-			} else {
-				//用户按了拒绝按钮
-				console.log('用户按了拒绝按钮');
-			}
-		},
 		TabSelect(e) {
 		},
 		goDetail(id) {
@@ -290,6 +191,9 @@ export default {
 			wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
 		},
 		addGood(good) {
+			if (good.stocks.length>1) {
+				return false
+			}
 			let goodIndex = this.cartList.findIndex((item)=>{
 				return item.id == good.id
 			})

@@ -65,12 +65,7 @@
 		</view>
 
 		<view class="cu-card no-card padding bg-white" v-else>
-			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-			bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+			{{goodDetail.parameter}}
 		</view>
 
 
