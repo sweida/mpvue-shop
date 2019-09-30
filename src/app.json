@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/goods/main",
     "pages/article/main",
     "pages/cart/main",
     "pages/selectAddress/main",
@@ -13,8 +14,7 @@
     "pages/articleDetail/main",
     "pages/orderlist/main",
     "pages/vouchers/main",
-    "pages/counter/main",
-    "pages/goods/main"
+    "pages/counter/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,11 +1,5 @@
 <template>
 	<view>
-		<!-- <swiper class="screen-swiper round-dot" :indicator-dots="true" :circular="true" :autoplay="true" interval="5000"
-		 duration="500">
-			<swiper-item v-for="(item,index) in 4" :key="index">
-				<image :src="'https://ossweb-img.qq.com/images/lol/web201310/skin/big3900'+index+ '.jpg'" mode="aspectFill"></image>
-			</swiper-item>
-		</swiper> -->
 		<view class="cu-bar search bg-white">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -16,94 +10,63 @@
 			</view>
 		</view>
 		<view class="VerticalBox">
-			<scroll-view class="VerticalNav nav" scroll-y scroll-with-animation :scroll-top="verticalNavTop" style="height:calc(100vh - 100rpx)">
-				<view class="cu-item" :class="index==tabCur?'text-green cur':''" v-for="(item,index) in list" :key="index" @tap="TabSelect"
+			<scroll-view class="VerticalNav nav bg-white" scroll-y scroll-with-animation :scroll-top="verticalNavTop" style="height:calc(100vh - 100rpx)">
+				<view class="cu-item" :class="index==tabCur?'text-green cur':''" v-for="(item,index) in classifys" :key="index" @tap="TabSelect(index)"
 				 :data-id="index">
-					Tab-{{item.name}}
+					{{item}}
 				</view>
 			</scroll-view>
+			
+			<!-- <view class="grid col-2 padding-xs">
+				<view class="cu-card case padding-xs" v-for="(item, index) in articleList" :key="index" @click="goRouter(item.id)">
+					<view class="cu-item shadow">
+						<view class="image">
+							<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
+							mode="widthFix"></image>
+							<view class="cu-tag bg-blue">{{item.label}}</view>
+						</view>
+						<view class="flex"> 
+							<text class="text-cut padding-xs">{{item.title}}</text>
+						</view>
+						<view class="content text-gray text-sm flex justify-end padding-sm">
+							<text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.clicks}}
+							<text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.like_count}}
+						</view>
+					</view>
+				</view>
+			</view> -->
 			<scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 100rpx)"
 			 :scroll-into-view="'main-'+mainCur" @scroll="VerticalMain">
-				<view class="padding-top padding-lr" v-for="(item,index) in list" :key="index" :id="'main-'+index">
+			 	<view class="" v-if="goodList==''">
+					<image src="https://image.weilanwl.com/gif/loading-1.gif" mode="aspectFit" class="gif-white response" style="height:160rpx"></image>
+				</view>
+				<view class="padding-sm" v-else>
 					<view class="cu-bar solid-bottom bg-white">
 						<view class="action">
-							<text class="cuIcon-title text-green"></text> Tab-{{item.name}}</view>
+							<text class="cuIcon-title text-green"></text> {{classifys[tabCur]}}</view>
 					</view>
-					<view class="cu-list menu-avatar">
-						<view class="cu-item">
-							<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
-							<view class="content">
-								<view class="text-grey">凯尔</view>
-								<view class="text-gray text-sm flex">
-									<text class="text-cut">
-										<text class="cuIcon-infofill text-red  margin-right-xs"></text>
-										我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。
-									</text> </view>
-							</view>
-							<view class="action">
-								<view class="text-grey text-xs">22:20</view>
-								<view class="cu-tag round bg-grey sm">5</view>
-							</view>
-						</view>
-						<view class="cu-item">
-							<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
-								<view class="cu-tag badge">99+</view>
-							</view>
-							<view class="content">
-								<view class="text-grey">
-									<text class="text-cut">瓦洛兰之盾-塔里克</text>
-									<view class="cu-tag round bg-orange sm">战士</view>
+					<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodList" :key="index">
+
+						<view class="cu-item shadow padding-tb">
+							<view class="content padding-left-sm">
+								<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
+								mode="aspectFill"></image>
+								<view class="desc">
+									<view class="titles"> 
+										{{item.title}}
+									</view>
+									<view class="text-xs text-gray descp">{{item.desc}}</view>
+									<view class="flex align-end justify-between">
+										<view class="margin-top-sm">
+											<view class="text-price text-xl text-orange margin-right">{{item.price}}</view>
+										</view>
+										<view class="button-box">
+											<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(item)">
+												<text class="cuIcon-cart"></text>
+											</view>
+										</view>
+									</view>
 								</view>
-								<view class="text-gray text-sm flex">
-									<text class="text-cut">
-										塔里克是保护者星灵，用超乎寻常的力量守护着符文之地的生命、仁爱以及万物之美。塔里克由于渎职而被放逐，离开了祖国德玛西亚，前去攀登巨神峰寻找救赎，但他找到的却是来自星界的更高层的召唤。现在的塔里克与古代巨神族的神力相融合，以瓦洛兰之盾的身份，永不疲倦地警惕着阴险狡诈的虚空腐化之力。
-									</text>
-								</view>
-							</view>
-							<view class="action">
-								<view class="text-grey text-xs">22:20</view>
-								<view class="cuIcon-notice_forbid_fill text-gray"></view>
-							</view>
-						</view>
-						<view class="cu-item ">
-							<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png);"></view>
-							<view class="content">
-								<view class="text-pink"><text class="text-cut">莫甘娜</text></view>
-								<view class="text-gray text-sm flex"> <text class="text-cut">凯尔，你被自己的光芒变的盲目！</text></view>
-							</view>
-							<view class="action">
-								<view class="text-grey text-xs">22:20</view>
-								<view class="cu-tag round bg-red sm">5</view>
-							</view>
-						</view>
-						<view class="cu-item grayscale">
-							<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big81007.jpg);"></view>
-							<view class="content">
-								<view><text class="text-cut">伊泽瑞尔</text>
-									<view class="cu-tag round bg-orange sm">断开连接...</view>
-								</view>
-								<view class="text-gray text-sm flex"> <text class="text-cut"> 等我回来一个打十个</text></view>
-							</view>
-							<view class="action">
-								<view class="text-grey text-xs">22:20</view>
-								<view class="cu-tag round bg-red sm">5</view>
-							</view>
-						</view>
-						<view class="cu-item cur">
-							<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big81020.jpg);">
-								<view class="cu-tag badge"></view>
-							</view>
-							<view class="content">
-								<view>
-									<text class="text-cut">瓦罗兰大陆-睡衣守护者-新手保护营</text>
-									<view class="cu-tag round bg-orange sm">6人</view>
-								</view>
-								<view class="text-gray text-sm flex">
-									<text class="text-cut"> 伊泽瑞尔：<text class="cuIcon-locationfill text-orange margin-right-xs"></text> 传送中...</text></view>
-							</view>
-							<view class="action">
-								<view class="text-grey text-xs">22:20</view>
-								<view class="cuIcon-notice_forbid_fill text-gray"></view>
 							</view>
 						</view>
 					</view>
@@ -118,6 +81,8 @@
 		data() {
 			return {
 				list: [],
+				classifys: [],
+				goodList: [],
 				tabCur: 0,
 				mainCur: 0,
 				verticalNavTop: 0,
@@ -125,27 +90,42 @@
 			};
 		},
 		onLoad() {
+			this.getGoodClassify()
 			// uni.showLoading({
 			// 	title: '加载中...',
 			// 	mask: true
 			// });
-			let list = [{}];
-			for (let i = 0; i < 26; i++) {
-				list[i] = {};
-				list[i].name = String.fromCharCode(65 + i);
-				list[i].id = i;
-			}
-			this.list = list;
-			this.listCur = list[0];
+			// let list = [{}];
+			// for (let i = 0; i < 26; i++) {
+			// 	list[i] = {};
+			// 	list[i].name = String.fromCharCode(65 + i);
+			// 	list[i].id = i;
+			// }
+			// this.list = list;
+			// this.listCur = list[0];
 		},
 		onReady() {
 			// uni.hideLoading()
 		},
 		methods: {
-			TabSelect(e) {
-				this.tabCur = e.currentTarget.dataset.id;
-				this.mainCur = e.currentTarget.dataset.id;
-				this.verticalNavTop = (e.currentTarget.dataset.id - 1) * 50
+			getGoodClassify() {
+				this.$fly.get('/good/classify').then(res => {
+					this.classifys = res.data
+					this.getGoodList(this.classifys[0])
+				})
+			},
+			getGoodList(classify) {
+				let params = {
+					classify: classify
+				}
+				this.$fly.post('/good/list', params).then(res => {
+					this.goodList = res.data
+				})
+			},
+			TabSelect(index) {
+				this.tabCur = index
+				this.mainCur = index;
+				this.getGoodList(this.classifys[index])
 			},
 			VerticalMain(e) {
 				let tabHeight = 0;
@@ -177,6 +157,35 @@
 </script>
 
 <style>
+
+.titles{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box !important;
+	-webkit-line-clamp:2;
+	-webkit-box-orient: vertical;
+}
+.button-box{
+	display: flex;
+	line-height: 40xrpx;
+	justify-content: space-between;
+	align-items: center;
+}
+.btn-box{
+	border: 1px solid #ddd;
+	border-radius: 50%;
+	width: 40rpx;
+	height: 40rpx;
+	text-align: center;
+	line-height: 40rpx;
+}
+
+.cu-card.article>.cu-item .content>image {
+	width: 180rpx;
+	height: 5.6em;
+}
+
+
 	.fixed {
 		position: fixed;
 		z-index: 99;

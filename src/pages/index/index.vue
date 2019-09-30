@@ -51,7 +51,7 @@
 								<view class="cu-tag bg-yellow light sm radius" v-if="item.vipprice">会员价: ¥{{item.vipprice | keepTwoNum}}</view>
 								<view class="text-price text-xl text-orange margin-right">{{item.price | keepTwoNum}}</view>
 							</view>
-							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(item)">
+							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(item, 0)">
 								<text class="cuIcon-cart"></text>
 							</view>
 							<!-- <button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button> -->
@@ -190,18 +190,21 @@ export default {
 			// let url = '/pages/goodDetail/main'
 			wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
 		},
-		addGood(good) {
-			if (good.stocks.length>1) {
-				return false
-			}
+		addGood(good, index) {
+			// 多规格的
+			// if (good.stocks.length>1) {
+			// 	return false
+			// }
 			let goodIndex = this.cartList.findIndex((item)=>{
 				return item.id == good.id
 			})
 
-			// 商品不存在
+			// 如果购物车还没有这个商品
 			if (goodIndex == -1) {
 				good.count = 1
 				good.check = true
+				good.label_id = good.stocks[index].label_id
+				good.price = good.stocks[index].price
 				this.cartList.push(good)
 			//foodIndex存在 ,更新数据
 			} else {
