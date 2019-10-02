@@ -14,8 +14,7 @@
 		 indicator-active-color="#0081ff">
 			<swiper-item v-for="(item,index) in swiperList" :key="index" :class="cardCur==index?'cur':''">
 				<view class="swiper-item">
-					<image :src="item.url" mode="aspectFill" v-if="item.type=='image'"></image>
-					<video :src="item.url" autoplay loop muted :show-play-btn="false" :controls="false" objectFit="cover" v-if="item.type=='video'"></video>
+					<image :src="item.url" mode="aspectFill"></image>
 				</view>
 			</swiper-item>
 		</swiper>
@@ -41,7 +40,7 @@
 			<view class="cu-item shadow padding-tb" @click="goDetail(item.id)">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-					 mode="aspectFill"></image>
+					mode="aspectFill"></image>
 					<view class="desc">
 						<view class="text-cut" style="width: 450rpx">{{item.title}}</view>
 						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
@@ -51,12 +50,75 @@
 								<view class="cu-tag bg-yellow light sm radius" v-if="item.vipprice">会员价: ¥{{item.vipprice | keepTwoNum}}</view>
 								<view class="text-price text-xl text-orange margin-right">{{item.price | keepTwoNum}}</view>
 							</view>
-							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(item, 0)">
+							<view class="cu-btn cu-avatar bg-green round"   @tap.stop="showModal(item)" data-target="ChooseModal">
 								<text class="cuIcon-cart"></text>
+								<!-- @click.stop="addGood(item, 0)" -->
 							</view>
 							<!-- <button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button> -->
 						</view>
 					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 多规格 -->
+		<view class="cu-modal bottom-modal" :class="modalName=='ChooseModal'?'show':''" @tap="hideModal">
+			<view class="cu-dialog" @tap.stop="">
+				<view class="dialog-main bg-white text-left">
+
+					<view class="flex goodInfo padding-lr-sm ">
+						<view class="img-box">
+							<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
+							mode="aspectFill"></image>
+						</view>
+						<view class="padding-sm">
+							<view class="text-cut text-sm padding-bottom-xs" style="width: 450rpx">{{modalGood.title}}</view>
+							<view class="text-price text-df text-orange margin-right">{{modalStocks[modalStocksIndex].price}}</view>
+							<view class="text-sm">已选择： {{modalStocks[modalStocksIndex].label}}</view>
+						</view>
+						<view class="text-xl text-gray" @tap="hideModal">
+							<text class="cuIcon-close close"></text>
+						</view>
+					</view>
+
+					<view class="flex padding-lr-sm padding-tb-sm">
+						<text class="label">
+							规格
+						</text>
+						<view v-for="(item, index) in modalStocks" class="padding-xs" :key="index">
+							<button class="cu-btn red sm" :class="item.checked?'bg-red':'line-red'" @tap="ChooseCheckbox(index)"
+							:data-value="item.label_id"> {{item.label}}
+							</button>
+						</view>
+					</view>
+					<view class="flex padding-lr-sm padding-top-sm padding-bottom-lg justify-between">
+						<view class="button-box">
+							<text class="label2">
+								数量
+							</text>
+							<text class="btn-box disabled" v-if="modalCuont==1">
+								<text class="lg text-gray cuIcon-move"></text>
+							</text>
+							<text class="btn-box" @click="decCount()" v-else>
+								<text class="lg text-gray cuIcon-move" ></text>
+							</text>
+							<text class="margin-lr-sm">{{modalCuont}}</text>
+							<text class="btn-box disabled" v-if="modalCuont>=modalStocks[modalStocksIndex].stock">
+								<text class="lg text-gray cuIcon-add" ></text>
+							</text>
+							<text class="btn-box" @click="addCount()" v-else>
+								<text class="lg text-gray cuIcon-add" ></text>
+							</text>
+						</view>
+						<button class="cu-btn bg-red block modal-sub" >确定</button>
+					</view>
+
+
+
+					<!-- <view class="cu-bar bg-white">
+						<view class="action text-blue" @tap="hideModal">取消</view>
+						<view class="action text-green" @tap="hideModal">确定</view>
+					</view> -->
 				</view>
 			</view>
 		</view>
@@ -72,6 +134,15 @@ export default {
 		return {
 			canIUse: wx.canIUse('button.open-type.getUserInfo'),
 			cardCur: 0,
+			modalStocksIndex: 0,
+			modalCuont: 1,
+			modalName: null,
+			modalStocks: [
+				{
+					price: ''
+				}
+			],
+			modalGood: {},
 			swiperList: [{
 				id: 0,
 				type: 'image',
@@ -163,7 +234,7 @@ export default {
 		// wx.login({
 		// 	success (res) {
 		// 		if (res.code){
-		// 			wx.showModal({
+		// 			wx.(item)({
 		// 				title: '是否删除该商品？',
 		// 				content: ''
 		// 			})
@@ -179,6 +250,34 @@ export default {
 	},
 	methods: {
 		...mapMutations(["update"]),
+		// 弹窗模块
+		showModal(item) {
+			this.modalGood = item
+			this.modalStocks = item.stocks
+			this.modalStocks.forEach(item => {
+				item.checked = false
+			})
+			this.modalStocks[0].checked = true
+			this.modalName = 'ChooseModal'
+		},
+		hideModal(e) {
+			this.modalName = null
+		},
+		ChooseCheckbox(index) {
+			this.modalStocks.forEach(item => {
+				item.checked = false
+			})
+			this.modalStocksIndex = index
+			this.modalStocks[index].checked = true
+		},
+		decCount() {
+			this.modalCuont--
+		},
+		addCount() {
+			this.modalCuont++
+		},
+
+
 		getGoodList() {
 			this.$fly.post('/good/list').then(res => {
 				this.goodList = res.data.data
@@ -310,4 +409,62 @@ export default {
 		margin-left: calc(var(--left) * 100rpx - 150rpx);
 		z-index: var(--index);
 	}
+
+
+/* 弹窗 */
+.cu-dialog{
+	background: transparent;
+	padding-top: 40rpx;
+}
+.dialog-main{
+
+}
+.cu-dialog .label{
+	padding-top: 12rpx;
+	padding-right: 14rpx;
+}
+
+.cu-dialog .label2{
+	padding-top: 2rpx;
+	padding-right: 24rpx;
+}
+
+.cu-dialog .goodInfo .img-box{
+	width: 180rpx;
+	height: 160rpx;
+}
+.cu-dialog .goodInfo image {
+	width: 100%;
+	height: 100% !important;
+	margin-top: -40rpx;
+	object-fit: cover;
+	border: 2px solid #fff;
+}
+
+.cu-dialog .close{
+	position: absolute;
+	right: 20rpx;
+	top: 60rpx;
+}
+.button-box{
+	display: flex;
+	line-height: 40xrpx;
+	justify-content: flex-start;
+	align-items: center;
+}
+.btn-box{
+	border: 1px solid #ddd;
+	border-radius: 50%;
+	width: 40rpx;
+	height: 40rpx;
+	text-align: center;
+	line-height: 40rpx;
+}
+.disabled{
+	opacity: .4;
+}
+.text-ddd{
+	color: #ddd
+}
+
 </style>
