@@ -9,6 +9,8 @@
 				<button class="cu-btn bg-green shadow-blur round">搜索</button>
 			</view>
 		</view>
+
+		<!-- banner -->
 		<swiper class="card-swiper square-dot" :indicator-dots="true" :circular="true"
 		 :autoplay="true" interval="5000" duration="500" @change="cardSwiper" indicator-color="#8799a3"
 		 indicator-active-color="#0081ff">
@@ -19,20 +21,18 @@
 			</swiper-item>
 		</swiper>
 
+		<!-- 分类 -->
 		<view class="cu-card no-card">
-
-				<view class="cu-list grid col-4 no-border">
-					<view class="cu-item" v-for="(item,index) in cuIconList" :key="index">
-						<view :class="['cuIcon-' + item.cuIcon,'text-' + item.color]">
-							<view class="cu-tag badge" v-if="item.badge!=0">
-								<block v-if="item.badge!=1">{{item.badge>99?'99+':item.badge}}</block>
-							</view>
+			<view class="cu-list grid col-4 no-border">
+				<view class="cu-item" v-for="(item,index) in cuIconList" :key="index">
+					<view :class="['cuIcon-' + item.cuIcon,'text-' + item.color]">
+						<view class="cu-tag badge" v-if="item.badge!=0">
+							<block v-if="item.badge!=1">{{item.badge>99?'99+':item.badge}}</block>
 						</view>
-						<text>{{item.name}}</text>
 					</view>
+					<text>{{item.name}}</text>
 				</view>
-
-
+			</view>
 		</view>
 
 		<!-- 商品 -->
@@ -43,18 +43,15 @@
 					mode="aspectFill"></image>
 					<view class="desc">
 						<view class="text-cut" style="width: 450rpx">{{item.title}}</view>
-						<!-- <view class="title"><view class="text-cut">无意者 烈火焚身;以正义的烈火拔出黑暗。我有自己的正义，见证至高的烈火吧。</view></view> -->
 						<view class="text-xs text-gray descp">{{item.desc}}</view>
 						<view class="flex align-end justify-between">
 							<view class="margin-top-sm">
-								<view class="cu-tag bg-yellow light sm radius" v-if="item.vipprice">会员价: ¥{{item.vipprice | keepTwoNum}}</view>
-								<view class="text-price text-xl text-orange margin-right">{{item.price | keepTwoNum}}</view>
+								<view class="cu-tag bg-yellow light sm radius" v-if="item.stocks[0].vip_price">会员价: ¥{{item.stocks[0].vip_price | keepTwoNum}}</view>
+								<view class="text-price text-xl text-orange margin-right">{{item.stocks[0].price | keepTwoNum}}</view>
 							</view>
-							<view class="cu-btn cu-avatar bg-green round"   @tap.stop="showModal(item)" data-target="ChooseModal">
+							<view class="cu-btn cu-avatar bg-green round" @tap.stop="addGood(item)" data-target="ChooseModal">
 								<text class="cuIcon-cart"></text>
-								<!-- @click.stop="addGood(item, 0)" -->
 							</view>
-							<!-- <button class="cu-btn round bg-green sm"  @click.stop="addGood('a')">+购物车</button> -->
 						</view>
 					</view>
 				</view>
@@ -72,8 +69,8 @@
 							mode="aspectFill"></image>
 						</view>
 						<view class="padding-sm">
-							<view class="text-cut text-sm padding-bottom-xs" style="width: 450rpx">{{modalGood.title}}</view>
-							<view class="text-price text-df text-orange margin-right">{{modalStocks[modalStocksIndex].price}}</view>
+							<view class="text-price text-lg text-orange margin-right">{{modalStocks[modalStocksIndex].price}}</view>
+							<view class="text-sm">库存： {{modalStocks[modalStocksIndex].stock}}</view>
 							<view class="text-sm">已选择： {{modalStocks[modalStocksIndex].label}}</view>
 						</view>
 						<view class="text-xl text-gray" @tap="hideModal">
@@ -110,15 +107,9 @@
 								<text class="lg text-gray cuIcon-add" ></text>
 							</text>
 						</view>
-						<button class="cu-btn bg-red block modal-sub" >确定</button>
+						<button class="cu-btn bg-red block modal-sub" @click="submitStock(modalGood, modalStocksIndex, modalCuont)" >确定</button>
 					</view>
 
-
-
-					<!-- <view class="cu-bar bg-white">
-						<view class="action text-blue" @tap="hideModal">取消</view>
-						<view class="action text-green" @tap="hideModal">确定</view>
-					</view> -->
 				</view>
 			</view>
 		</view>
@@ -172,7 +163,6 @@ export default {
 				type: 'image',
 				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big99008.jpg'
 			}],
-			dotStyle: false,
 			towerStart: 0,
 			direction: '',
 			cuIconList: [{
@@ -231,17 +221,7 @@ export default {
 		// 初始化towerSwiper 传已有的数组名即可
 	},
 	mounted (){
-		// wx.login({
-		// 	success (res) {
-		// 		if (res.code){
-		// 			wx.(item)({
-		// 				title: '是否删除该商品？',
-		// 				content: ''
-		// 			})
-		// 			// 这里可以把code传给后台，后台用此获取openid及session_key
-		// 		}
-		// 	},
-		// })
+
 	},
 	computed: {
 		...mapState([
@@ -250,10 +230,20 @@ export default {
 	},
 	methods: {
 		...mapMutations(["update"]),
+		getGoodList() {
+			this.$fly.post('/good/list').then(res => {
+				this.goodList = res.data.data
+			})
+		},
+		goDetail(id) {
+			wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
+		},
 		// 弹窗模块
 		showModal(item) {
 			this.modalGood = item
 			this.modalStocks = item.stocks
+			this.modalStocksIndex = 0
+			this.modalCuont = 1
 			this.modalStocks.forEach(item => {
 				item.checked = false
 			})
@@ -263,6 +253,7 @@ export default {
 		hideModal(e) {
 			this.modalName = null
 		},
+		// 切换规格
 		ChooseCheckbox(index) {
 			this.modalStocks.forEach(item => {
 				item.checked = false
@@ -276,59 +267,48 @@ export default {
 		addCount() {
 			this.modalCuont++
 		},
-
-
-		getGoodList() {
-			this.$fly.post('/good/list').then(res => {
-				this.goodList = res.data.data
-			})
-		},
-		TabSelect(e) {
-		},
-		goDetail(id) {
-			// let url = '/pages/goodDetail/main'
-			wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
-		},
 		addGood(good, index) {
-			// 多规格的
-			// if (good.stocks.length>1) {
-			// 	return false
-			// }
+			// 多规格的情况弹窗
+			if (good.stocks.length>1) {
+				this.showModal(good)
+			} else {
+				this.submitStock(good, 0, 1)
+			}
+		},
+		
+		// 商品，第几个label，数量
+		submitStock(good, index, count) {
 			let goodIndex = this.cartList.findIndex((item)=>{
-				return item.id == good.id
+				return ((item.id == good.id) && (item.label_id == good.stocks[index].label_id))
 			})
 
 			// 如果购物车还没有这个商品
 			if (goodIndex == -1) {
-				good.count = 1
+				good.count = count
 				good.check = true
 				good.label_id = good.stocks[index].label_id
+				good.label = good.stocks[index].label
 				good.price = good.stocks[index].price
 				this.cartList.push(good)
 			//foodIndex存在 ,更新数据
 			} else {
-				this.cartList[goodIndex].count++
+				this.cartList[goodIndex].count += this.modalCuont
 			}
 			this.$set( this.cartList, this.cartList)
 			this.$forceUpdate()
 			this.update({cartList: this.cartList})
 
-			// wx.setTabBarBadge({
-			// 	index: 3,
-			// 	text: this.allCount
-			// })
 			wx.showToast({
 				title: '已加入购物车',
 				icon: 'none',
 				duration:1200
 			});
+			setTimeout(() => {
+				this.hideModal()
+			}, 300)
+		},
 
-			console.log(this.cartList, 44);
-			
-		},
-		DotStyle(e) {
-			this.dotStyle = e.detail.value
-		},
+		// banner特效
 		// cardSwiper
 		cardSwiper(e) {
 			this.cardCur = e.mp.detail.current
@@ -348,12 +328,10 @@ export default {
 		TowerStart(e) {
 			this.towerStart = e.touches[0].pageX
 		},
-
 		// towerSwiper计算方向
 		TowerMove(e) {
 			this.direction = e.touches[0].pageX - this.towerStart > 0 ? 'right' : 'left'
 		},
-
 		// towerSwiper计算滚动
 		TowerEnd(e) {
 			let direction = this.direction;

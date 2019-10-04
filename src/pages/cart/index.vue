@@ -24,7 +24,10 @@
 						mode="aspectFill"></image>
 						<view class="desc">
 							<view class="titles"> 
-								{{item.title}} {{item.isDelete ? '失效' : '正常'}}
+								{{item.title}}
+							</view>
+							<view>
+								<view class='cu-tag radius sm'>{{item.label}}</view>
 							</view>
 							<view class="flex align-end justify-between">
 								<view class="margin-top-sm">
@@ -148,6 +151,8 @@ export default {
 		if (!this.isLogin) {
 			wx.navigateTo({url: '/pages/login/main'})
 		}
+
+		// 所有商品的id
 		let idList = []
 		this.cartList.forEach((item, index) => {
 			let data = {

@@ -45,18 +45,21 @@
 				</view>
 			</view>
 
-			<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodlist" :key="index">
+			<view class="cu-card article no-card solid-bottom" v-for="(item, index) in checkList" :key="index">
 				<view class="cu-item shadow padding-tb">
 					<view class="content padding-left-sm">
 						<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
 						mode="aspectFill"></image>
 						<view class="desc">
 							<view class="titles"> 
-								{{item.goodname}}
+								{{item.title}}
+							</view>
+							<view>
+								<view class='cu-tag radius sm'>{{item.label}}</view>
 							</view>
 							<view class="flex align-end justify-between">
 								<view class="margin-top-sm">
-									<view class="text-price text-xl margin-right">{{item.amount}}</view>
+									<view class="text-price text-lg margin-right">{{item.price}}</view>
 								</view>
 								<view class="button-box text-gray">
 									<text class="margin-lr-sm">x {{item.count}}</text>
@@ -93,17 +96,17 @@
 		<view class="cu-card padding bg-white margin-top text-lg">
 			<view class="content text-content flex justify-between">
 				<text class="text-black">商品总价</text>
-				<text class="text-price">4453.2</text>
+				<text class="text-price">{{goodPrice}}</text>
 			</view>
 			<view class="content text-content flex justify-between">
 				<text class="text-black">运费</text>
-				<text class="text-price">40.00</text>
+				<text class="text-price">{{freight}}</text>
 			</view>
 			<view class="content text-content flex justify-between">
 				<text class="text-black">优惠金额</text>
 				<text class="text-red">
 					-
-					<text class=" text-price">20</text>
+					<text class=" text-price">{{discountAmount}}</text>
 				</text>
 			</view>
 		</view>
@@ -130,29 +133,9 @@ import {mapState, mapMutations } from 'vuex'
 			return {
 				hasAddress: true,
 				list: [],
-				allPrice: 9999.99,
 				address: '',
-				goodlist: [
-					{
-						goodname: '这是标题啊啊啊啊啊啊1',
-						check: false,
-						count: 1,
-						amount: 88.90,
-						img: 'ss'
-					}, {
-						goodname: '这是标题啊啊啊啊啊啊2',
-						check: true,
-						count: 3,
-						amount: 88.70,
-						img: 'ss'
-					}, {
-						goodname: '这是标题啊啊啊啊啊啊3',
-						check: true,
-						count: 2,
-						amount: 88.00,
-						img: 'ss'
-					}, 
-				],
+				freight: 2000,
+				discountAmount: 0
 			};
 		},
 		computed: {
@@ -160,28 +143,32 @@ import {mapState, mapMutations } from 'vuex'
 				'userInfo',
 				'cartList'
 			]),
-			// 所有价格
-			allPrice: function() {
-				let sum = 0
-				this.goodlist.forEach(item => {
-					if (item.check) {
-						sum += item.amount * item.count
-					}
-						
-				})
-				return sum.toFixed(2)
+			checkList: function() {
+				const filterByName = (arr) => {
+					return arr.filter(item => item.check == true)
+				}
+				return filterByName(this.cartList)
 			},
-			// 是否全选
-			allCheck: function() {
-				const checkAdult = (item) => {
-					return item.check
-				}
-				if (!this.goodlist.every(checkAdult)) {
-					return false
-				} else {
-					return true
-				}
-			} 
+			// 商品总数
+			allCount: function() {
+				let sum = 0
+				this.checkList.forEach(item => {
+					sum += item.count	
+				})
+				return sum
+			},
+			// 商品价格
+			goodPrice: function() {
+				let sum = 0
+				this.checkList.forEach(item => {
+					sum += item.price * item.count	
+				})
+				return sum
+			},
+			// 付款金额
+			allPrice: function() {
+				return this.goodPrice - this.freight - this.discountAmount
+			}
 		},
 		onShow() {
 			this.address = this.userInfo.defaultAddress
@@ -273,6 +260,7 @@ import {mapState, mapMutations } from 'vuex'
 	position: fixed;
 	width: 100%;
 	bottom: 0;
+	z-index: 100;
 }
 .cu-bar.tabbar.shop .action{
 	width: 500rpx;
