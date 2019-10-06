@@ -1,274 +1,159 @@
 <template>
 	<view class="order-page">
-
-		<!-- 地址 -->
-		<view class="case cu-card no-card addressBox bg-white flex justify-between align-center padding-lr margin-tb"
-			style="background-image:url(/static/images/address-bg.png)"
-			v-if="!hasAddress"
-			@click="selectAddress"
-		>
-			<text class='cuIcon-locationfill text-orange'></text>
-			<view class="newAddress">
-				请选择一个收获地址
-			</view> 
-			<text class='cuIcon-right text-gray'></text>
+		<scroll-view scroll-x class="bg-white nav" scroll-with-animation :scroll-left="scrollLeft">
+			<view class="cu-item" :class="index==TabCur?'text-green cur':''" v-for="(item, index) in nav" :key="index" @tap="tabSelect(index)" :data-id="index">
+				{{item.name}}
+			</view>
+		</scroll-view>
+		<view class="contain" v-if="orderList.length==0">
+			<img src="/static/images/order.png" alt="" class="noList">
+			<view class="padding">暂无订单</view>
 		</view>
-		<view class="case cu-card no-card addressBox bg-white flex justify-between align-center padding-lr margin-tb"
-			style="background-image:url(/static/images/address-bg.png)"
-			@click="selectAddress"
-			v-else
-		>
-			<text class='cuIcon-locationfill text-orange'></text>
-			<view class="cu-item">
-				<view class="padding">
-					<view class="flex justify-between text-lg ">
-						<view class="">收货人：凯尔</view>
-						<view class="">13798661111</view>
+
+		<div v-else class="orderBox">
+			<view  class="cu-list menu orderList" v-for="(item, index) in orderList" :key="index" >
+				<view class="cu-item">
+					<view class="content flex justify-between">
+						<text class="text-sm">订单编号：{{item.order_id}}</text>
+						<text class="text-sm text-gray" v-if="item.status == 6">交易已取消</text>
+						<text class="text-sm text-red" v-else>{{nav[item.status].name}}</text>
 					</view>
-					<view class="text-cut text-grey padding-top-sm address">
-						收货地址：广东省广州市天河区 珠江新城 开花国际XXXXXXXXXX 开花国际XXXXXXXXXX
-					</view> 
 				</view>
-			</view>
-			<text class='cuIcon-right text-gray'></text>
-        </view>
-		<!-- <view class="address-border">
-		</view> -->
-
-		<!-- 商品 -->
-		<view  class="cu-list menu margin--top">
-			<view class="cu-item ">
-				<view class="content flex justify-between">
-					<text class="text-grey">
-						<text class='cuIcon-shop text-orange'></text>
-						生鲜</text>
-					<text class="text-grey">3件商品</text>
-				</view>
-			</view>
-
-			<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodlist" :key="index">
-				<view class="cu-item shadow padding-tb">
-					<view class="content padding-left-sm">
-						<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-						mode="aspectFill"></image>
-						<view class="desc">
-							<view class="titles"> 
-								{{item.goodname}}
-							</view>
-							<view class="flex align-end justify-between">
-								<view class="margin-top-sm">
-									<view class="text-price text-xl margin-right">{{item.amount}}</view>
+				<view class="cu-card article no-card solid-bottom bg-white">
+					<view class="cu-item shadow padding-tb" v-for="(goods, index2) in item.goodList" :key="index2">
+						<view class="content padding-left-sm">
+							<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
+							mode="aspectFill"></image>
+							<view class="desc">
+								<view class="titles"> 
+									{{goods.good_name}}
 								</view>
-								<view class="button-box text-gray">
-									<text class="margin-lr-sm">x {{item.count}}</text>
+								<view>
+									<view class='cu-tag radius sm'>{{goods.label}}</view>
 								</view>
+								<text class="text-sm">
+									<text class="text-price text-sm text-gray">{{goods.price}}</text>
+									<text class="text-gray"> x {{goods.count}}</text>
+								</text>
 							</view>
 						</view>
 					</view>
 				</view>
-			</view>
-
-		</view>
-
-		<!-- 优惠券和备注 -->
-		<!-- <view class="cu-bar bg-white solid-bottom margin-top">
-			<view class="action">
-				<text class="cuIcon-title text-orange"></text> 菜单列表
-			</view>
-		</view> -->
-		<view class="cu-list menu">
-			<view class="cu-item arrow" @click="selectVouchers">
-				<view class="content flex justify-between">
-					<text class="">优惠券</text>
-					<text class="text-grey">无</text>
+				<view class="cu-item ">
+					<view class="content">
+						<text class="text-sm">
+							共2件商品 实付：
+							<text class="text-price text-lg">{{item.totalPay}}</text>
+						</text>
+					</view>
 				</view>
 			</view>
-			<view class="cu-form-group">
-				<view class="title">备注</view>
-				<input placeholder="口味、偏好等要求" name="input" class="text-right" />
-			</view>
-		</view>
-
-		
-		<!-- 结算列表 -->
-		<view class="cu-card padding bg-white margin-top text-lg">
-			<view class="content text-content flex justify-between">
-				<text class="text-black">商品总价</text>
-				<text class="text-price">4453.2</text>
-			</view>
-			<view class="content text-content flex justify-between">
-				<text class="text-black">运费</text>
-				<text class="text-price">40.00</text>
-			</view>
-			<view class="content text-content flex justify-between">
-				<text class="text-black">优惠金额</text>
-				<text class="text-red">
-					-
-					<text class=" text-price">20</text>
-				</text>
-			</view>
-		</view>
-
-		<!-- 结算按钮 -->
-		<view class="cu-bar bg-white tabbar border shop solid-top">
-			<view class="action text-xl">
-				应付金额：
-				<text class="text-price text-xxl text-red">{{allPrice}}</text>
-			</view>
-			<view class="bg-red submit">立即支付</view>
-		</view>
-
-
-
+		</div>
 	</view>
 </template>
 
 <script>
+import {mapState, mapMutations } from 'vuex'
+
 	export default {
 		data() {
 			return {
-				hasAddress: true,
-				list: [],
-				allPrice: 9999.99,
-				goodlist: [
+				scrollLeft: 0,
+				TabCur: 0,
+				nav: [
 					{
-						goodname: '这是标题啊啊啊啊啊啊1',
-						check: false,
-						count: 1,
-						amount: 88.90,
-						img: 'ss'
+						id: 0,
+						name: '全部',
+						desc: '暂无可用优惠券~'
 					}, {
-						goodname: '这是标题啊啊啊啊啊啊2',
-						check: true,
-						count: 3,
-						amount: 88.70,
-						img: 'ss'
+						id: 1,
+						name: '待付款',
+						desc: '暂无使用优惠券~'
 					}, {
-						goodname: '这是标题啊啊啊啊啊啊3',
-						check: true,
-						count: 2,
-						amount: 88.00,
-						img: 'ss'
-					}, 
+						id: 2,
+						name: '待配送',
+						desc: '暂无过期优惠券~'
+					}, {
+						id: 3,
+						name: '配送中',
+						desc: '暂无过期优惠券~'
+					}, {
+						id: 4,
+						name: '待确定',
+						desc: '暂无过期优惠券~'
+					}, {
+						id: 5,
+						name: '已完成',
+						desc: '暂无过期优惠券~'
+					}, {
+						id: 6,
+						name: '已取消',
+						desc: '暂无过期优惠券~'
+					}
 				],
+				orderList: []
 			};
 		},
 		computed: {
-			// 所有价格
-			allPrice: function() {
-				let sum = 0
-				this.goodlist.forEach(item => {
-					if (item.check) {
-						sum += item.amount * item.count
-					}
-						
-				})
-				return sum.toFixed(2)
-			},
-			// 是否全选
-			allCheck: function() {
-				const checkAdult = (item) => {
-					return item.check
-				}
-				if (!this.goodlist.every(checkAdult)) {
-					return false
-				} else {
-					return true
-				}
-			} 
+			...mapState([
+				'isLogin',
+				'userInfo',
+			]),
+		},
+		onLoad() {
+			this.getOrderList()
 		},
 		methods: {
-			selectAddress() {
-				wx.navigateTo({url: `/pages/selectAddress/main`})
+			tabSelect(index) {
+				this.TabCur = index
+				this.getOrderList()
 			},
-			selectVouchers() {
-				wx.navigateTo({url: `/pages/vouchers/main`})
-			},
-			checkGood(index) {
-				this.goodlist[index].check = !this.goodlist[index].check
-			},
-			decCount(index) {
-				if (this.goodlist[index].count > 1) {
-					this.goodlist[index].count--
-				} else {
-					let that = this
-					wx.showModal({
-                    title: '是否删除该商品？',
-                    content: '',
-                    success(res){
-                        if(res.confirm){
-							that.goodlist.splice(index, 1)
-                        }
-                    }
-                })
+			getOrderList() {
+				let params = {
+					user_id: this.userInfo.openid,
+					status: this.nav[this.TabCur].id,
 				}
+				this.$fly.post('/order/personalList', params).then(res => {
+					this.orderList = res.data.data
+					console.log(res.data);
+					
+
+				})
 			},
-			addCount(index) {
-				this.goodlist[index].count++
-			},
-			handleAllCheck() {
-				if (this.allCheck) {
-					this.allPrice = 0
-					this.goodlist.forEach(item => {
-						item.check = false
-						this.allCheck = false
-						this.allPrice += 0
-					})
-				} else {
-					this.allPrice = 0
-					this.goodlist.forEach(item => {
-						item.check = true
-						this.allCheck = true
-						this.allPrice += item.amount * item.count
-					})
-				}
-			}
 			
 		},
 	}
 </script>
 
 <style>
-.addressBox{
-	padding-bottom: 8rpx;
-	background-repeat: repeat-x;
-	background-position: bottom;
-	background-size: 80rpx;
+page, .order-page{
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
-.newAddress{
-	padding: 50rpx 0;
+.contain{
+	height: 100%;
+	text-align: center;
+	background: #fff;
+	margin-top: 16rpx;
 }
-.order-page{
-	padding-bottom: 130rpx;
+.orderBox{
+	padding-bottom: 30rpx;
 }
-.text-content{
-	line-height: 2;
+.orderList{
+	margin:16rpx 16rpx 0;
 }
-.address{
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: -webkit-box !important;
-	-webkit-line-clamp:2;
-	-webkit-box-orient: vertical;
-}
-
-
 .cu-card.article>.cu-item .content>image {
 	width: 140rpx;
 	height: 120rpx;
 }
-
-
-.tabbar{
-	position: fixed;
-	width: 100%;
-	bottom: 0;
+.cu-list+.cu-list {
+	margin-top: 16rpx;
 }
-.cu-bar.tabbar.shop .action{
-	width: 500rpx;
-	font-size: 32rpx;
-	text-align: left;
-	padding-left: 30rpx;
+.noList{
+	width: 596rpx;
+	height: 328rpx;
+	margin-top: 200rpx;
 }
 
 </style>

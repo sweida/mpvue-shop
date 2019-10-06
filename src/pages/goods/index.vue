@@ -70,6 +70,11 @@
 							</view>
 						</view>
 					</view>
+					<view class="bg-white text-center text-xs text-gray padding-bottom-sm flex justify-center align-center">
+						<text class="hr"></text>
+						 没有更多了 
+						<text class="hr"></text>
+					</view>
 				</view>
 			</scroll-view>
 		</view>
@@ -232,4 +237,12 @@
 		background-color: #f1f1f1;
 		flex: 1;
 	}
+
+.hr{
+	height: 2rpx;
+	width: 80rpx;
+	background: #ccc;
+	display: inline-block;
+	margin: 0 6rpx;
+}
 </style>

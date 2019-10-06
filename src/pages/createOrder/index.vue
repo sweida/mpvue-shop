@@ -41,7 +41,7 @@
 					<text class="text-grey">
 						<text class='cuIcon-shop text-orange'></text>
 						生鲜</text>
-					<text class="text-grey">3件商品</text>
+					<text class="text-grey">{{allCount}}件商品</text>
 				</view>
 			</view>
 

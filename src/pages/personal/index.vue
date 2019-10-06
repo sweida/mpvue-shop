@@ -31,10 +31,11 @@
 		</view>
 
 	  	<view  class="cu-list menu card-menu margin--top">
-			<view class="cu-item arrow">
+			<view class="cu-item arrow" @click="goRouter('orderlist')">
 				<view class="content">
 					<text class="text-grey">我的订单</text>
 				</view>
+				<view class="text-gray text-sm">查看全部订单</view>
 			</view>
 			<view class="cu-list grid col-4 no-border">
 				<view class="cu-item" v-for="(item,index) in cuIconList" :key="index">
