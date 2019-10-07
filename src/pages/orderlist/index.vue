@@ -1,7 +1,7 @@
 <template>
 	<view class="order-page">
 		<scroll-view scroll-x class="bg-white nav" scroll-with-animation :scroll-left="scrollLeft">
-			<view class="cu-item" :class="index==TabCur?'text-green cur':''" v-for="(item, index) in nav" :key="index" @tap="tabSelect(index)" :data-id="index">
+			<view class="cu-item" :class="index==TabCur?'text-red cur':''" v-for="(item, index) in nav" :key="index" @tap="tabSelect(index)" :data-id="index">
 				{{item.name}}
 			</view>
 		</scroll-view>
@@ -19,7 +19,7 @@
 						<text class="text-sm text-red" v-else>{{nav[item.status].name}}</text>
 					</view>
 				</view>
-				<view class="cu-card article no-card solid-bottom bg-white">
+				<view class="cu-card article no-card solid-bottom bg-white" @click="goRouter(item)">
 					<view class="cu-item shadow padding-tb" v-for="(goods, index2) in item.goodList" :key="index2">
 						<view class="content padding-left-sm">
 							<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
@@ -42,12 +42,12 @@
 				<view class="cu-item ">
 					<view class="content flex justify-between">
 						<text class="text-sm">
-							共2件商品 实付：
+							共 {{item.allCount}} 件商品 实付：
 							<text class="text-price text-lg">{{item.totalPay}}</text>
 						</text>
 						<view v-if="item.status == 1">
-							<button class="cu-btn lines-gray sm shadow-blur round margin-right-sm" @click="cancelOrder(item.order_id)">取消订单</button>
-							<button class="cu-btn bg-red sm shadow-blur round" @click="payOrder(item.order_id)">立即支付</button>
+							<button class="cu-btn lines-gray sm round margin-right-sm" @click="cancelOrder(item.order_id)">取消订单</button>
+							<button class="cu-btn bg-red sm shadow-blur round" @click="payOrder(item.order_id)">立即付款</button>
 						</view>
 					</view>
 				</view>
@@ -104,7 +104,7 @@ import {mapState, mapMutations } from 'vuex'
 				'userInfo',
 			]),
 		},
-		onLoad() {
+		onShow() {
 			this.getOrderList()
 		},
 		methods: {
@@ -118,14 +118,20 @@ import {mapState, mapMutations } from 'vuex'
 					status: this.nav[this.TabCur].id,
 				}
 				this.$fly.post('/order/personalList', params).then(res => {
+					console.log(res.data.data, 'orderList');
 					this.orderList = res.data.data
-					console.log(res.data);
+					this.orderList.forEach(item => {
+						item.allCount = 0
+						item.goodList.forEach(goods => {
+							item.allCount += goods.count
+						})
+					})
 				})
 			},
 			cancelOrder(id) {
 				wx.showModal({
-					title: '是否要取消订单？',
-					content: '',
+					title: '取消订单',
+					content: '确定要取消订单吗？',
 					success: (res) => {
 						if (!res.cancel) {
 							let params = {
@@ -134,8 +140,8 @@ import {mapState, mapMutations } from 'vuex'
 							this.$fly.post('/order/cancel', params).then(resp => {
 								wx.showToast({
 									title: resp.message,
-									icon: 'none',
-									duration:1200
+									icon: 'success',
+									duration:1500
 								});
 							})
 							this.getOrderList()
@@ -157,6 +163,9 @@ import {mapState, mapMutations } from 'vuex'
 				})
 				this.TabCur = 2
 				this.getOrderList()
+			},
+			goRouter(item) {
+				wx.navigateTo({url: `/pages/orderDetail/main?order=${JSON.stringify(item)}`})
 			}
 			
 		},

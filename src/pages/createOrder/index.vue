@@ -100,7 +100,7 @@
 			</view>
 			<view class="content text-content flex justify-between">
 				<text class="text-black">运费</text>
-				<text class="text-price">{{freight}}</text>
+				<text class="text-price">{{expressPrice}}</text>
 			</view>
 			<view class="content text-content flex justify-between">
 				<text class="text-black">优惠金额</text>
@@ -117,7 +117,7 @@
 				应付金额：
 				<text class="text-price text-xxl text-red">{{allPrice}}</text>
 			</view>
-			<view class="bg-red submit">立即支付</view>
+			<view class="bg-red submit" @click="createOrder">创建订单</view>
 		</view>
 
 
@@ -134,7 +134,7 @@ import {mapState, mapMutations } from 'vuex'
 				hasAddress: true,
 				list: [],
 				address: '',
-				freight: 2000,
+				expressPrice: 2000,
 				discountAmount: 0
 			};
 		},
@@ -167,7 +167,7 @@ import {mapState, mapMutations } from 'vuex'
 			},
 			// 付款金额
 			allPrice: function() {
-				return this.goodPrice - this.freight - this.discountAmount
+				return this.goodPrice - this.expressPrice - this.discountAmount
 			}
 		},
 		onShow() {
@@ -181,44 +181,24 @@ import {mapState, mapMutations } from 'vuex'
 			selectVouchers() {
 				wx.navigateTo({url: `/pages/vouchers/main`})
 			},
-			checkGood(index) {
-				this.goodlist[index].check = !this.goodlist[index].check
-			},
-			decCount(index) {
-				if (this.goodlist[index].count > 1) {
-					this.goodlist[index].count--
-				} else {
-					let that = this
-					wx.showModal({
-                    title: '是否删除该商品？',
-                    content: '',
-                    success(res){
-                        if(res.confirm){
-							that.goodlist.splice(index, 1)
-                        }
-                    }
-                })
+			createOrder() {
+				let params = {
+					user_id: this.userInfo.openid,
+					expressType: '快递',
+					expressName: '顺丰',
+					expressPrice: this.expressPrice,
+					addressName: this.address.name,
+					addressPhone: this.address.phone,
+					address: this.address.city + this.address.address,
+					discount: 0,
+					discount_id: '',
+					goodList: this.checkList
 				}
-			},
-			addCount(index) {
-				this.goodlist[index].count++
-			},
-			handleAllCheck() {
-				if (this.allCheck) {
-					this.allPrice = 0
-					this.goodlist.forEach(item => {
-						item.check = false
-						this.allCheck = false
-						this.allPrice += 0
-					})
-				} else {
-					this.allPrice = 0
-					this.goodlist.forEach(item => {
-						item.check = true
-						this.allCheck = true
-						this.allPrice += item.amount * item.count
-					})
-				}
+				console.log(this.checkList, 56);
+				
+				this.$fly.post('/order/create', params).then(res => {
+
+				})
 			}
 			
 		},
