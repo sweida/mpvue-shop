@@ -40,11 +40,15 @@
 					</view>
 				</view>
 				<view class="cu-item ">
-					<view class="content">
+					<view class="content flex justify-between">
 						<text class="text-sm">
 							共2件商品 实付：
 							<text class="text-price text-lg">{{item.totalPay}}</text>
 						</text>
+						<view v-if="item.status == 1">
+							<button class="cu-btn lines-gray sm shadow-blur round margin-right-sm" @click="cancelOrder(item.order_id)">取消订单</button>
+							<button class="cu-btn bg-red sm shadow-blur round" @click="payOrder(item.order_id)">立即支付</button>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -116,10 +120,44 @@ import {mapState, mapMutations } from 'vuex'
 				this.$fly.post('/order/personalList', params).then(res => {
 					this.orderList = res.data.data
 					console.log(res.data);
-					
-
 				})
 			},
+			cancelOrder(id) {
+				wx.showModal({
+					title: '是否要取消订单？',
+					content: '',
+					success: (res) => {
+						if (!res.cancel) {
+							let params = {
+								order_id: id,
+							}
+							this.$fly.post('/order/cancel', params).then(resp => {
+								wx.showToast({
+									title: resp.message,
+									icon: 'none',
+									duration:1200
+								});
+							})
+							this.getOrderList()
+						}
+					}
+				})
+				
+			},
+			payOrder(id) {
+				let params = {
+					order_id: id,
+				}
+				this.$fly.post('/order/payOrder', params).then(resp => {
+					wx.showToast({
+						title: resp.message,
+						icon: 'success',
+						duration:1200
+					});
+				})
+				this.TabCur = 2
+				this.getOrderList()
+			}
 			
 		},
 	}
