@@ -37,7 +37,7 @@
 			</view> -->
 			<scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 100rpx)"
 			 :scroll-into-view="'main-'+mainCur" @scroll="VerticalMain">
-			 	<view class="" v-if="goodList==''">
+			 	<view class="" v-if="goodsList==''">
 					<image src="https://image.weilanwl.com/gif/loading-1.gif" mode="aspectFit" class="gif-white response" style="height:160rpx"></image>
 				</view>
 				<view class="padding-sm" v-else>
@@ -45,7 +45,7 @@
 						<view class="action">
 							<text class="cuIcon-title text-green"></text> {{classifys[tabCur]}}</view>
 					</view>
-					<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodList" :key="index">
+					<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodsList" :key="index">
 
 						<view class="cu-item shadow padding-tb">
 							<view class="content padding-left-sm">
@@ -87,7 +87,7 @@
 			return {
 				list: [],
 				classifys: [],
-				goodList: [],
+				goodsList: [],
 				tabCur: 0,
 				mainCur: 0,
 				verticalNavTop: 0,
@@ -95,7 +95,7 @@
 			};
 		},
 		onLoad() {
-			this.getGoodClassify()
+			this.getGoodsClassify()
 			// uni.showLoading({
 			// 	title: '加载中...',
 			// 	mask: true
@@ -113,24 +113,24 @@
 			// uni.hideLoading()
 		},
 		methods: {
-			getGoodClassify() {
-				this.$fly.get('/good/classify').then(res => {
+			getGoodsClassify() {
+				this.$fly.get('/goods/classify').then(res => {
 					this.classifys = res.data
-					this.getGoodList(this.classifys[0])
+					this.getGoodsList(this.classifys[0])
 				})
 			},
-			getGoodList(classify) {
+			getGoodsList(classify) {
 				let params = {
 					classify: classify
 				}
-				this.$fly.post('/good/list', params).then(res => {
-					this.goodList = res.data
+				this.$fly.post('/goods/list', params).then(res => {
+					this.goodsList = res.data
 				})
 			},
 			TabSelect(index) {
 				this.tabCur = index
 				this.mainCur = index;
-				this.getGoodList(this.classifys[index])
+				this.getGoodsList(this.classifys[index])
 			},
 			VerticalMain(e) {
 				let tabHeight = 0;

@@ -36,7 +36,7 @@
 		</view>
 
 		<!-- 商品 -->
-		<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodList" :key="index">
+		<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodsList" :key="index">
 			<view class="cu-item shadow padding-tb" @click="goDetail(item.id)">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
@@ -206,7 +206,7 @@ export default {
 				badge: 22,
 				name: '已配送'
 			}],
-			goodList: []
+			goodsList: []
 		};
 	},
 	filters:{
@@ -216,7 +216,7 @@ export default {
 		}
 	},
 	onLoad() {
-		this.getGoodList();
+		this.getGoodsList();
 		this.TowerSwiper('swiperList');
 		// 初始化towerSwiper 传已有的数组名即可
 	},
@@ -230,9 +230,9 @@ export default {
 	},
 	methods: {
 		...mapMutations(["update"]),
-		getGoodList() {
-			this.$fly.post('/good/list').then(res => {
-				this.goodList = res.data.data
+		getGoodsList() {
+			this.$fly.post('/goods/list').then(res => {
+				this.goodsList = res.data.data
 			})
 		},
 		goDetail(id) {

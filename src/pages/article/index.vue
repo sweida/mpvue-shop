@@ -85,7 +85,7 @@
 				})
 			},
 			getArticleClassify() {
-				this.$fly.get('/article/classify').then(res => {
+				this.$fly.get('/article/classifys').then(res => {
 					this.classifys = res.data
 					this.getArticleList(this.classifys[0])
 				})

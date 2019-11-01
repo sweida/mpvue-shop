@@ -36,19 +36,19 @@
 		<view class="text-sm padding-sm bg-white">
 			<text class="text-black">{{article.desc}}</text>
 		</view>
-		<view class="cu-card article no-card" v-if="article.good">
-			<view class="cu-item shadow padding-tb good" @click="goGoodDetail(article.good.id)">
+		<view class="cu-card article no-card" v-if="article.goods">
+			<view class="cu-item shadow padding-tb good" @click="goGoodDetail(article.goods.id)">
 				<view class="content">
 					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
 					 mode="aspectFill"></image>
 					<view class="desc">
-						<view class="text-cut" style="width: 450rpx">{{article.good.title}}</view>
-						<view class="text-xs text-gray descp">{{article.good.desc}}</view>
+						<view class="text-cut" style="width: 450rpx">{{article.goods.title}}</view>
+						<view class="text-xs text-gray descp">{{article.goods.desc}}</view>
 						<view class="flex align-end justify-between">
 							<view class="margin-top-sm">
-								<view class="text-price text-xl text-orange margin-right">{{article.good.price}}</view>
+								<view class="text-price text-xl text-orange margin-right">{{article.goods.price}}</view>
 							</view>
-							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(article.good)">
+							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(article.goods)">
 								<text class="cuIcon-cart"></text>
 							</view>
 						</view>
@@ -84,7 +84,7 @@ import {mapState, mapMutations } from 'vuex'
 			return {
 				article: '',
 				likeList: '',
-				good: '',
+				goods: '',
 				swiperList: [{
 					id: 0,
 					type: 'image',
@@ -164,7 +164,7 @@ import {mapState, mapMutations } from 'vuex'
 			goTab(url) {
 				wx.switchTab({url: `/pages/${url}/main`})
 			},
-			goGoodDetail(id) {
+			gosDetail(id) {
 				wx.navigateTo({url: `/pages/goodDetail/main?id=${id}`})
 			},
 			handleLike(active) {

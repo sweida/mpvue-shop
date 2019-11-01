@@ -7,7 +7,7 @@
 				<view class="cu-item">
 					<view class="content flex justify-between">
 						<text class="text-sm">{{order.allCount}} 件商品</text>
-						<text>{{status[order.status].name}}</text>
+						<text class="text-red">{{status[order.status].name}}</text>
 					</view>
 				</view>
 				<view class="cu-card article no-card solid-bottom bg-white">
@@ -50,11 +50,13 @@
 					<view class="line">
 						商品金额 <text class="text-price">{{order.goodPrice}}</text>
 					</view>
-					<view class="line">
+					<view class="line" v-if="order.discount>0">
 						商品优惠 <text class="text-price">{{order.discount}}</text>
 					</view>
 					<view class="line solid-bottom">
-						运费 <text class="text-price">{{order.expressPrice}}</text>
+						运费 
+						<text v-if="order.expressPrice==0">包邮</text>
+						<text class="text-price" v-else>{{order.expressPrice}}</text>
 					</view>
 					<view class="text-right padding-top-sm ">
 						合计： <text class="text-price text-lg text-red padding-left-xs">{{order.totalPay}}</text>
@@ -153,7 +155,7 @@ import {mapState, mapMutations } from 'vuex'
 					title: '取消订单',
 					content: '确定要取消订单吗？',
 					success: (res) => {
-						if (!res.cancel) {
+						if (res.confirm) {
 							let params = {
 								order_id: id,
 							}

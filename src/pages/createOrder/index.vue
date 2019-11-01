@@ -167,7 +167,7 @@ import {mapState, mapMutations } from 'vuex'
 			},
 			// 付款金额
 			allPrice: function() {
-				return this.goodPrice - this.expressPrice - this.discountAmount
+				return this.goodPrice + this.expressPrice - this.discountAmount
 			}
 		},
 		onShow() {
