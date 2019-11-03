@@ -3,7 +3,7 @@
 		<swiper class="screen-swiper" :indicator-dots="true" :circular="true"
 		 :autoplay="true" interval="5000" duration="500">
 			<swiper-item v-for="(item,index) in swiperList" :key="index">
-				<image :src="item.url" mode="aspectFill" v-if="item.type=='image'"></image>
+				<image :src="'http://static.golang365.com/' + item.url" mode="aspectFill"></image>
 			</swiper-item>
 		</swiper>
 		<view class="solid-bottom  padding-sm bg-white">
@@ -11,7 +11,7 @@
 			<text class="text-gray text-sm">{{goodDetail.desc}}</text>
 			<view class="flex justify-between padding-top">
 				<view>
-					<text class="text-price text-lg text-red">{{goodDetail.price}}</text>
+					<text class="text-price text-lg text-red">{{goodDetail.stocks[0].price}}</text>
 					<view class="cu-tag bg-yellow light sm radius margin-left-sm" v-if="goodDetail.vipprice">会员价: ¥{{goodDetail.vipprice}}</view>
 				</view>
 
@@ -61,7 +61,7 @@
 		</scroll-view>
 
 		<view class="cu-card no-card padding bg-white" v-if="TabCur==0">
-			{{goodDetail.detail}}
+			<div v-html="goodDetail.detail"> </div>
 		</view>
 
 		<view class="cu-card no-card padding bg-white" v-else>
@@ -96,36 +96,7 @@ import {mapState, mapMutations } from 'vuex'
 	export default {
 		data() {
 			return {
-				collect: false,
-				swiperList: [{
-					id: 0,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg'
-				}, {
-					id: 1,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big37006.jpg',
-				}, {
-					id: 2,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big39000.jpg'
-				}, {
-					id: 3,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg'
-				}, {
-					id: 4,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big25011.jpg'
-				}, {
-					id: 5,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big21016.jpg'
-				}, {
-					id: 6,
-					type: 'image',
-					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big99008.jpg'
-				}],
+				swiperList: [],
 				avatar: [
 					'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
 					'https://ossweb-img.qq.com/images/lol/web201310/skin/big81005.jpg',
@@ -160,12 +131,17 @@ import {mapState, mapMutations } from 'vuex'
 		},
 		methods: {
 			getGoodDetail(id) {
+				let url = 'http://static.golang365.com/'
 				let params = {
 					id: id,
 					user_id: this.userInfo.openid
 				}
-                this.$fly.post('/good/detail', params).then(res => {
-                    this.goodDetail = res.data
+                this.$fly.post('/goods/detail', params).then(res => {
+					this.goodDetail = res.data
+					this.swiperList = res.data.banners
+					// this.swiperList.forEach(item => {
+					// 	item.url = url + item.url
+					// })
                 })
             },
 			goRouter(url) {
@@ -185,13 +161,11 @@ import {mapState, mapMutations } from 'vuex'
 
 				// acitve falss 没收藏
 				let params = {
-					good_id: this.goodDetail.id,
+					goods_id: this.goodDetail.id,
 					user_id: this.userInfo.openid,
 					active: active
 				}
-				this.$fly.post('/good/likeGood', params).then(res => {
-					console.log(res, 333);
-					
+				this.$fly.post('/goods/likeGoods', params).then(res => {
 					this.goodDetail.collect = !this.goodDetail.collect
 					let text = ''
 					this.goodDetail.collect ? text='商品收藏成功！' : text='已取消收藏'

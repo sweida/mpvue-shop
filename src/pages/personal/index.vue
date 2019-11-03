@@ -58,7 +58,11 @@
 			<view class="cu-item arrow" @click="goRouter('addresslist')">
 				<view class="content">
 					<text class="cuIcon-circlefill text-grey"></text>
-					<text class="text-grey">收藏商品（{{userInfo.likeCount}}）</text>
+					<text class="text-grey">收藏商品
+						<text v-if="userInfo.likeCount">
+							（{{userInfo.likeCount}}）
+						</text>
+					</text>
 				</view>
 			</view>
 			<view class="cu-item arrow">

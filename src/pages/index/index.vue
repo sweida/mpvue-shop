@@ -39,7 +39,7 @@
 		<view class="cu-card article no-card solid-bottom" v-for="(item, index) in goodsList" :key="index">
 			<view class="cu-item shadow padding-tb" @click="goDetail(item.id)">
 				<view class="content">
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
+					<image :src="'http://static.golang365.com/'+item.defaultBanner"
 					mode="aspectFill"></image>
 					<view class="desc">
 						<view class="text-cut" style="width: 450rpx">{{item.title}}</view>
@@ -134,35 +134,7 @@ export default {
 				}
 			],
 			modalGood: {},
-			swiperList: [{
-				id: 0,
-				type: 'image',
-				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg'
-			}, {
-				id: 1,
-				type: 'image',
-				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big37006.jpg',
-			}, {
-				id: 2,
-				type: 'image',
-				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big39000.jpg'
-			}, {
-				id: 3,
-				type: 'image',
-				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg'
-			}, {
-				id: 4,
-				type: 'image',
-				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big25011.jpg'
-			}, {
-				id: 5,
-				type: 'image',
-				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big21016.jpg'
-			}, {
-				id: 6,
-				type: 'image',
-				url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big99008.jpg'
-			}],
+			swiperList: [],
 			towerStart: 0,
 			direction: '',
 			cuIconList: [{
@@ -217,6 +189,7 @@ export default {
 	},
 	onLoad() {
 		this.getGoodsList();
+		this.getBanners();
 		this.TowerSwiper('swiperList');
 		// 初始化towerSwiper 传已有的数组名即可
 	},
@@ -233,6 +206,19 @@ export default {
 		getGoodsList() {
 			this.$fly.post('/goods/list').then(res => {
 				this.goodsList = res.data.data
+			})
+		},
+		getBanners() {
+			let url = 'http://static.golang365.com/'
+			let params = {
+				type: 'banners'
+			}
+			this.$fly.post('/ad/list', params).then(res => {
+				console.log(res, 1111);
+				this.swiperList = res.data.data
+				this.swiperList.forEach(item => {
+					item.url = url + item.url
+				})
 			})
 		},
 		goDetail(id) {

@@ -5,6 +5,7 @@
 const Fly = require("flyio/dist/npm/wx");
 const fly = new Fly();
 const host = "http://127.0.0.1:8080/api/v1";
+// const host = "http://shop.golang365.com/api/v1";
 
 // 添加请求拦截器
 fly.interceptors.request.use(request => {

@@ -46,7 +46,7 @@
 						<view class="text-xs text-gray descp">{{article.goods.desc}}</view>
 						<view class="flex align-end justify-between">
 							<view class="margin-top-sm">
-								<view class="text-price text-xl text-orange margin-right">{{article.goods.price}}</view>
+								<view class="text-price text-xl text-orange margin-right">{{article.goods.stocks[0].price}}</view>
 							</view>
 							<view class="cu-btn cu-avatar bg-green round" @click.stop="addGood(article.goods)">
 								<text class="cuIcon-cart"></text>
@@ -57,8 +57,7 @@
 			</view>
 		</view>
 		<view class="cu-card dynamic no-card">
-			<view class="cu-item shadow padding">
-				{{article.content}}
+			<view class="cu-item shadow padding" v-html="article.content">
 			</view>
 		</view>
 		<!-- 底部菜单 -->
