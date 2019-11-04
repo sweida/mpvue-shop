@@ -192,7 +192,7 @@ import {mapState, mapMutations } from 'vuex'
 					address: this.address.city + this.address.address,
 					discount: 0,
 					discount_id: '',
-					goodList: this.checkList
+					goodsList: this.checkList
 				}
 				console.log(this.checkList, 56);
 				

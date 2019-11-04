@@ -156,7 +156,7 @@ export default {
 		let idList = []
 		this.cartList.forEach((item, index) => {
 			let data = {
-				good_id: item.id,
+				goods_id: item.id,
 				count: item.count,
 				label_id: item.label_id
 			}
