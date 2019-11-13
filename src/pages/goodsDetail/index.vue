@@ -11,11 +11,11 @@
 			<text class="text-gray text-sm">{{goodDetail.desc}}</text>
 			<view class="flex justify-between padding-top">
 				<view>
-					<text class="text-price text-lg text-red">{{goodDetail.stocks[0].price}}</text>
+					<text class="text-price text-lg text-red">{{goodDetail.stocks[0].Price}}</text>
 					<view class="cu-tag bg-yellow light sm radius margin-left-sm" v-if="goodDetail.vipprice">会员价: ¥{{goodDetail.vipprice}}</view>
 				</view>
 
-				<text class="text-sm text-gray">销量 {{goodDetail.buys}}</text>
+				<text class="text-sm text-gray">销量 {{goodDetail.sales}}</text>
 			</view>
 		</view>
 
@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import { moneyFormat } from '@/utils/index'
 import {mapState, mapMutations } from 'vuex'
 
 	export default {
@@ -137,8 +138,12 @@ import {mapState, mapMutations } from 'vuex'
 					user_id: this.userInfo.openid
 				}
                 this.$fly.post('/goods/detail', params).then(res => {
+					res.data.stocks.forEach(item => {
+						item.Price = moneyFormat(item.price)
+					});
 					this.goodDetail = res.data
 					this.swiperList = res.data.banners
+
 					// this.swiperList.forEach(item => {
 					// 	item.url = url + item.url
 					// })

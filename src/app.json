@@ -1,10 +1,10 @@
 {
   "pages": [
+    "pages/index/main",
     "pages/personal/main",
+    "pages/cart/main",
     "pages/orderlist/main",
     "pages/orderDetail/main",
-    "pages/cart/main",
-    "pages/index/main",
     "pages/goods/main",
     "pages/article/main",
     "pages/selectAddress/main",
@@ -12,7 +12,7 @@
     "pages/createOrder/main",
     "pages/addresslist/main",
     "pages/address/main",
-    "pages/goodDetail/main",
+    "pages/goodsDetail/main",
     "pages/articleDetail/main",
     "pages/vouchers/main",
     "pages/counter/main"

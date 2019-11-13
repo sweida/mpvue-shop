@@ -18,34 +18,11 @@ const state = {
   loginData: {},
   cart: 0,
   cartList: [],
-  a: [
-    {
-      goodname: "这是标题啊啊啊啊啊啊1",
-      check: false,
-      count: 1,
-      price: 88.9,
-      img: "ss"
-    },
-    {
-      goodname: "这是标题啊啊啊啊啊啊2",
-      check: true,
-      count: 6,
-      price: 88.7,
-      img: "ss"
-    },
-    {
-      goodname: "这是标题啊啊啊啊啊啊3",
-      check: true,
-      count: 2,
-      price: 88.0,
-      img: "ss"
-    }
-  ],
   cartCount: () => {
     let sum = 0
-    state.cartList.forEach(item => {
-      sum += item.count;
-    });
+    // state.cartList.forEach(item => {
+    //   sum += item.count;
+    // });
     return sum
   } 
 };

@@ -13,6 +13,8 @@ Vue.config.productionTip = false
 Vue.prototype.$fly = fly;
 Vue.prototype.$store = store
 
+Vue.prototype.$staticUrl = "http://static.golang365.com/";
+
 App.mpType = 'app'
 
 

@@ -20,28 +20,27 @@
 						<text>失效</text>
 					</div>
 					<view class="content padding-left-sm">
-						<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-						mode="aspectFill"></image>
+						<image :src="item.image" mode="aspectFill"></image>
 						<view class="desc">
 							<view class="titles"> 
-								{{item.title}}
+								{{item.goods.title}}
 							</view>
 							<view>
-								<view class='cu-tag radius sm'>{{item.label}}</view>
+								<view class='cu-tag radius sm'>{{item.stock.label}}</view>
 							</view>
 							<view class="flex align-end justify-between">
 								<view class="margin-top-sm">
 									<view class="text-price text-xl text-orange margin-right">{{item.price}}</view>
 								</view>
 								<view class="button-box">
-									<text class="btn-box" @click="decCount(index)">
+									<text class="btn-box" @click="decCount(item, index)">
 										<text class="lg text-gray cuIcon-move" ></text>
 									</text>
 									<text class="margin-lr-sm">{{item.count}}</text>
-									<text class="btn-box disabled" v-if="item.count>=item.stock">
+									<text class="btn-box disabled" v-if="item.count>=item.stock.stock">
 										<text class="lg text-gray cuIcon-add" ></text>
 									</text>
-									<text class="btn-box" @click="addCount(index)" v-else>
+									<text class="btn-box" @click="addCount(item, index)" v-else>
 										<text class="lg text-gray cuIcon-add" ></text>
 									</text>
 								</view>
@@ -70,29 +69,30 @@
 </template>
 
 <script>
+import { moneyFormat } from '@/utils/index'
 import {mapState, mapMutations } from 'vuex'
 
 export default {
 	data() {
 		return {
+			cartList: []
 		};
 	},
 	computed: {
 		...mapState([
 			'isLogin',
-			'cartList',
-			'cartCount'
+			'cartCount',
+			'userInfo'
 		]),
 		// 所有价格
 		allPrice: function() {
 			let sum = 0
 			this.cartList.forEach(item => {
 				if (item.check) {
-					sum += item.count * item.price
+					sum += item.count * item.stock.price
 				}
-					
 			})
-			return sum.toFixed(2)
+			return moneyFormat(sum)
 		},
 		// 是否全选 (需要除去失效的商品)
 		allCheck: function() {
@@ -132,7 +132,7 @@ export default {
 			return sum.toString()
 		}
 	},
-	created() {
+	created() {		
 		if (this.allCount!='0') {
 			wx.setTabBarBadge({
 				index: 3,
@@ -143,62 +143,46 @@ export default {
 				index: 3,
 			})
 		}
-		console.log(this.cartCount(), 123);
+		this.getCarts()
 
 	},
 	onTabItemTap() {		
 		// 查看是否授权
 		if (!this.isLogin) {
 			wx.navigateTo({url: '/pages/login/main'})
+		} else {
+			this.getCarts()
 		}
-
-		// 所有商品的id
-		let idList = []
-		this.cartList.forEach((item, index) => {
-			let data = {
-				goods_id: item.id,
-				count: item.count,
-				label_id: item.label_id
-			}
-			idList.push(data)
-		})
-
-		console.log(idList, 'a');
-		wx.showLoading({
-			title: "加载中",
-			mask: true
-		});
-		this.$fly.post('/cart/checkStock', {stocks: idList}).then(res => {
-			wx.hideLoading()
-			console.log(res, 4567);
-			res.data.forEach((item, index) => {
-				this.cartList[index] = Object.assign(this.cartList[index], item)
-				// 1.商品失效问题
-				// 2.商品价格变动问题
-				// 3.商品库存问题
-				this.cartList.forEach(good => {
-					if (good.isDelete) {
-						good.check = false
-					}
-					good.count = good.stock<good.count ? good.stock : good.count
-
-				})
-			})
-			console.log(this.cartList, 67);
-		})
-
-		
 	},
 	methods: {
 		...mapMutations(["update"]),
+		getCarts() {
+			this.$fly.post('/cart/person', {user_id: this.userInfo.openid}).then(res => {
+				res.data.forEach(item => {
+					item.price = moneyFormat(item.stock.price)
+					item.image = this.$staticUrl + item.defaultBanner
+					item.check = true
+				})
+				this.cartList = res.data
+				
+				// this.$forceUpdate({cartList: res.data})
+				// this.update({cartList: res.data})
+			})
+		},
 		checkGood(index) {
 			this.cartList[index].check = !this.cartList[index].check
-			this.$forceUpdate(this.cartList)
-			this.update(this.cartList)
+			// this.$forceUpdate(this.cartList)
+			// this.update(this.cartList)
 		},
-		decCount(index) {
+		decCount(item, index) {
+			let params = {
+				...item,
+				count: 1
+			}
 			if (this.cartList[index].count > 1) {
-				this.cartList[index].count--
+				this.$fly.post('/cart/dec', params).then(() => {
+					this.cartList[index].count--
+				})
 			} else {
 				let that = this
 				wx.showModal({
@@ -206,20 +190,23 @@ export default {
 					content: '',
 					success(res){
 						if(res.confirm){
-							that.cartList.splice(index, 1)
+							this.$fly.post('/cart/dec', params).then(() => {
+								that.cartList.splice(index, 1)
+							})
 						}
 					}
 				})
 			}
-			this.$forceUpdate(this.cartList)
-			this.update(this.cartList)
 		},
-		addCount(index) {
-			console.log(index, this.cartList);
-			
-			this.cartList[index].count++
-			this.$forceUpdate(this.cartList)
-			this.update(this.cartList)
+		addCount(item, index) {
+			let params = {
+				...item,
+				count: 1
+			}
+			this.$fly.post('/cart/add', params).then(res => {
+				this.cartList[index].count ++
+			})
+			// this.$forceUpdate(this.cartList)
 		},
 		handleAllCheck() {
 			this.allCheck = !this.allCheck
@@ -234,8 +221,7 @@ export default {
 					this.allPrice += item.price * item.count
 				})
 			}
-			this.$forceUpdate(this.cartList)
-			this.update(this.cartList)
+			// this.$forceUpdate(this.cartList)
 		},
 		submitOrder() {
 			// if (this.allPrice == 0) {

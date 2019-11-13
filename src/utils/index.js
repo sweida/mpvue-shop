@@ -18,7 +18,15 @@ export function formatTime (date) {
   return `${t1} ${t2}`
 }
 
+
+export function moneyFormat(value) {
+  let v = Number(value / 100);
+  return v.toFixed(2);
+}
+
+
 export default {
   formatNumber,
-  formatTime
-}
+  formatTime,
+  moneyFormat
+};
