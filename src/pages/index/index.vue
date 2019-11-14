@@ -41,7 +41,7 @@
 								<view class="cu-tag bg-yellow light sm radius" v-if="item.stocks[0].vip_price">会员价: ¥{{item.stocks[0].vip_price}}</view>
 								<view class="text-price text-xl text-orange margin-right">{{item.price}}</view>
 							</view>
-							<view class="cu-btn cu-avatar bg-green round" @tap.stop="addGood(item, 0, 1)" data-target="ChooseModal">
+							<view class="cu-btn cu-avatar bg-green round" @tap.stop="addGoods(item, 0, 1)" data-target="ChooseModal">
 								<text class="cuIcon-cart"></text>
 							</view>
 						</view>
@@ -50,7 +50,7 @@
 			</view>
 		</view>
 
-		<!-- 多规格 -->
+		<!-- 多规格弹窗 -->
 		<GoodsModal ref="goodsModal" @submitStock=submitStock></GoodsModal>
 
 	</view>
@@ -125,7 +125,6 @@ export default {
 	},
 	onLoad() {
 		this.getGoodsList();
-		// 初始化towerSwiper 传已有的数组名即可
 	},
 	mounted (){
 
@@ -151,7 +150,7 @@ export default {
 			wx.navigateTo({url: `/pages/goodsDetail/main?id=${id}`})
 		},
 
-		addGood(goods, index) {
+		addGoods(goods, index) {
 			// 多规格的情况弹窗
 			if (goods.stocks.length>1) {
 				this.$refs.goodsModal.showModal(goods)

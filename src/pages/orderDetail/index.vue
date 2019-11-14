@@ -48,7 +48,7 @@
 			<view  class="cu-list menu orderList">
 				<view class="cu-card article no-card solid-bottom bg-white padding text-black">
 					<view class="line">
-						商品金额 <text class="text-price">{{order.goodPrice}}</text>
+						商品金额 <text class="text-price">{{order.goodsPrice}}</text>
 					</view>
 					<view class="line" v-if="order.discount>0">
 						商品优惠 <text class="text-price">{{order.discount}}</text>

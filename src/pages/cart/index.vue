@@ -133,17 +133,17 @@ export default {
 		}
 	},
 	created() {		
-		if (this.allCount!='0') {
-			wx.setTabBarBadge({
-				index: 3,
-				text: this.allCount
-			})
-		} else {
-			wx.hideTabBarRedDot({
-				index: 3,
-			})
-		}
-		this.getCarts()
+		// if (this.allCount!='0') {
+		// 	wx.setTabBarBadge({
+		// 		index: 3,
+		// 		text: this.allCount
+		// 	})
+		// } else {
+		// 	wx.hideTabBarRedDot({
+		// 		index: 3,
+		// 	})
+		// }
+		// this.getCarts()
 
 	},
 	onTabItemTap() {		
@@ -224,13 +224,19 @@ export default {
 			// this.$forceUpdate(this.cartList)
 		},
 		submitOrder() {
-			// if (this.allPrice == 0) {
-			// 	wx.showToast({
-			// 		title: ,
-			// 		icon: 'none',
-			// 		duration: 2000,
-			// 	});
-			// }
+			const filterGoods = () => {
+				return this.cartList.filter(item => item.check == true)
+			}
+			this.update({ orderGoods: filterGoods() })
+			this.update({ cartPrice: this.allPrice })
+
+			if (filterGoods().length == 0) {
+				wx.showToast({
+					title: '请选择需要购买的',
+					icon: 'none',
+					duration: 2000,
+				});
+			}
 			wx.navigateTo({url: '/pages/createOrder/main'})
 		}
 		

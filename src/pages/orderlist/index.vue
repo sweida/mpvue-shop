@@ -20,13 +20,13 @@
 					</view>
 				</view>
 				<view class="cu-card article no-card solid-bottom bg-white" @click="goRouter(item)">
-					<view class="cu-item shadow padding-tb" v-for="(goods, index2) in item.goodList" :key="index2">
+					<view class="cu-item shadow padding-tb" v-for="(goods, index2) in item.goodsList" :key="index2">
 						<view class="content padding-left-sm">
 							<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
 							mode="aspectFill"></image>
 							<view class="desc">
 								<view class="titles"> 
-									{{goods.good_name}}
+									{{goods.goods_name}}
 								</view>
 								<view>
 									<view class='cu-tag radius sm'>{{goods.label}}</view>
@@ -57,119 +57,123 @@
 </template>
 
 <script>
+import { moneyFormat } from '@/utils/index'
 import {mapState, mapMutations } from 'vuex'
 
-	export default {
-		data() {
-			return {
-				scrollLeft: 0,
-				TabCur: 0,
-				nav: [
-					{
-						id: 0,
-						name: '全部',
-						desc: '暂无可用优惠券~'
-					}, {
-						id: 1,
-						name: '待付款',
-						desc: '暂无使用优惠券~'
-					}, {
-						id: 2,
-						name: '待配送',
-						desc: '暂无过期优惠券~'
-					}, {
-						id: 3,
-						name: '配送中',
-						desc: '暂无过期优惠券~'
-					}, {
-						id: 4,
-						name: '待确定',
-						desc: '暂无过期优惠券~'
-					}, {
-						id: 5,
-						name: '已完成',
-						desc: '暂无过期优惠券~'
-					}, {
-						id: 6,
-						name: '已取消',
-						desc: '暂无过期优惠券~'
-					}
-				],
-				orderList: []
-			};
-		},
-		computed: {
-			...mapState([
-				'isLogin',
-				'userInfo',
-			]),
-		},
-		onShow() {
+export default {
+	data() {
+		return {
+			scrollLeft: 0,
+			TabCur: 0,
+			nav: [
+				{
+					id: 0,
+					name: '全部',
+					desc: '暂无可用优惠券~'
+				}, {
+					id: 1,
+					name: '待付款',
+					desc: '暂无使用优惠券~'
+				}, {
+					id: 2,
+					name: '待配送',
+					desc: '暂无过期优惠券~'
+				}, {
+					id: 3,
+					name: '配送中',
+					desc: '暂无过期优惠券~'
+				}, {
+					id: 4,
+					name: '待确定',
+					desc: '暂无过期优惠券~'
+				}, {
+					id: 5,
+					name: '已完成',
+					desc: '暂无过期优惠券~'
+				}, {
+					id: 6,
+					name: '已取消',
+					desc: '暂无过期优惠券~'
+				}
+			],
+			orderList: []
+		};
+	},
+	computed: {
+		...mapState([
+			'isLogin',
+			'userInfo',
+		]),
+	},
+	onShow() {
+		this.getOrderList()
+	},
+	methods: {
+		tabSelect(index) {
+			this.TabCur = index
 			this.getOrderList()
 		},
-		methods: {
-			tabSelect(index) {
-				this.TabCur = index
-				this.getOrderList()
-			},
-			getOrderList() {
-				let params = {
-					user_id: this.userInfo.openid,
-					status: this.nav[this.TabCur].id,
-				}
-				this.$fly.post('/order/personalList', params).then(res => {
-					console.log(res.data.data, 'orderList');
-					this.orderList = res.data.data
-					this.orderList.forEach(item => {
-						item.allCount = 0
-						item.goodList.forEach(goods => {
-							item.allCount += goods.count
-						})
+		getOrderList() {
+			let params = {
+				user_id: this.userInfo.openid,
+				status: this.nav[this.TabCur].id,
+			}
+			this.$fly.post('/order/personalList', params).then(res => {
+				this.orderList = res.data.data
+				this.orderList
+				this.orderList.forEach(item => {
+					item.totalPay = moneyFormat(item.totalPay)
+
+					item.allCount = 0
+					item.goodsList.forEach(goods => {
+						goods.price = moneyFormat(goods.price)
+						item.allCount += goods.count
 					})
 				})
-			},
-			cancelOrder(id) {
-				wx.showModal({
-					title: '取消订单',
-					content: '确定要取消订单吗？',
-					success: (res) => {
-						if (!res.cancel) {
-							let params = {
-								order_id: id,
-							}
-							this.$fly.post('/order/cancel', params).then(resp => {
-								wx.showToast({
-									title: resp.message,
-									icon: 'success',
-									duration:1500
-								});
-							})
-							this.getOrderList()
+			})
+		},
+		cancelOrder(id) {
+			wx.showModal({
+				title: '取消订单',
+				content: '确定要取消订单吗？',
+				success: (res) => {
+					if (!res.cancel) {
+						let params = {
+							order_id: id,
 						}
+						this.$fly.post('/order/cancel', params).then(resp => {
+							wx.showToast({
+								title: resp.message,
+								icon: 'success',
+								duration:1500
+							});
+						})
+						this.getOrderList()
 					}
-				})
-				
-			},
-			payOrder(id) {
-				let params = {
-					order_id: id,
 				}
-				this.$fly.post('/order/payOrder', params).then(resp => {
-					wx.showToast({
-						title: resp.message,
-						icon: 'success',
-						duration:1200
-					});
-				})
-				this.TabCur = 2
-				this.getOrderList()
-			},
-			goRouter(item) {
-				wx.navigateTo({url: `/pages/orderDetail/main?order=${JSON.stringify(item)}`})
-			}
+			})
 			
 		},
-	}
+		payOrder(id) {
+			let params = {
+				order_id: id,
+			}
+			this.$fly.post('/order/payOrder', params).then(resp => {
+				wx.showToast({
+					title: resp.message,
+					icon: 'success',
+					duration:1200
+				});
+			})
+			this.TabCur = 2
+			this.getOrderList()
+		},
+		goRouter(item) {
+			wx.navigateTo({url: `/pages/orderDetail/main?order=${JSON.stringify(item)}`})
+		}
+		
+	},
+}
 </script>
 
 <style>

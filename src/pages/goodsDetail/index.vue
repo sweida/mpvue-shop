@@ -3,7 +3,7 @@
 		<swiper class="screen-swiper" :indicator-dots="true" :circular="true"
 		 :autoplay="true" interval="5000" duration="500">
 			<swiper-item v-for="(item,index) in swiperList" :key="index">
-				<image :src="'http://static.golang365.com/' + item.url" mode="aspectFill"></image>
+				<image :src="item.url" mode="aspectFill"></image>
 			</swiper-item>
 		</swiper>
 		<view class="solid-bottom  padding-sm bg-white">
@@ -97,6 +97,7 @@ import {mapState, mapMutations } from 'vuex'
 	export default {
 		data() {
 			return {
+				goodDetail: {},
 				swiperList: [],
 				avatar: [
 					'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
@@ -105,7 +106,6 @@ import {mapState, mapMutations } from 'vuex'
 					'https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg',
 					'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
 				],
-				goodDetail: {},
 				TabCur: 0,
 				scrollLeft: 0,
 				nav: [
@@ -127,12 +127,11 @@ import {mapState, mapMutations } from 'vuex'
 		},
 		onLoad(options) {
 			if (options.id) {
-				this.getGoodDetail(options.id)
+				this.getGoodsDetail(options.id)
 			}
 		},
 		methods: {
-			getGoodDetail(id) {
-				let url = 'http://static.golang365.com/'
+			getGoodsDetail(id) {
 				let params = {
 					id: id,
 					user_id: this.userInfo.openid
@@ -142,11 +141,11 @@ import {mapState, mapMutations } from 'vuex'
 						item.Price = moneyFormat(item.price)
 					});
 					this.goodDetail = res.data
-					this.swiperList = res.data.banners
 
-					// this.swiperList.forEach(item => {
-					// 	item.url = url + item.url
-					// })
+					res.data.banners.forEach(item => {
+						item.url = this.$staticUrl + item.url
+					})
+					this.swiperList = res.data.banners
                 })
             },
 			goRouter(url) {

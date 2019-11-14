@@ -45,17 +45,16 @@
 				</view>
 			</view>
 
-			<view class="cu-card article no-card solid-bottom" v-for="(item, index) in checkList" :key="index">
+			<view class="cu-card article no-card solid-bottom" v-for="(item, index) in orderGoods" :key="index">
 				<view class="cu-item shadow padding-tb">
 					<view class="content padding-left-sm">
-						<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-						mode="aspectFill"></image>
+						<image :src="item.image" mode="aspectFill"></image>
 						<view class="desc">
 							<view class="titles"> 
-								{{item.title}}
+								{{item.goods.title}}
 							</view>
 							<view>
-								<view class='cu-tag radius sm'>{{item.label}}</view>
+								<view class='cu-tag radius sm'>{{item.stock.label}}</view>
 							</view>
 							<view class="flex align-end justify-between">
 								<view class="margin-top-sm">
@@ -96,15 +95,17 @@
 		<view class="cu-card padding bg-white margin-top text-lg">
 			<view class="content text-content flex justify-between">
 				<text class="text-black">商品总价</text>
-				<text class="text-price">{{goodPrice}}</text>
+				<text class="text-price">{{cartPrice}}</text>
 			</view>
 			<view class="content text-content flex justify-between">
 				<text class="text-black">运费</text>
-				<text class="text-price">{{expressPrice}}</text>
+				<text v-if="expressPrice==0">包邮</text>
+				<text class="text-price" v-else>{{expressPrice}}</text>
 			</view>
 			<view class="content text-content flex justify-between">
 				<text class="text-black">优惠金额</text>
-				<text class="text-red">
+				<text v-if="discountAmount==0">无</text>
+				<text class="text-red" v-else>
 					-
 					<text class=" text-price">{{discountAmount}}</text>
 				</text>
@@ -134,40 +135,34 @@ import {mapState, mapMutations } from 'vuex'
 				hasAddress: true,
 				list: [],
 				address: '',
-				expressPrice: 2000,
+				// expressPrice: 2000,
 				discountAmount: 0
 			};
 		},
 		computed: {
 			...mapState([
 				'userInfo',
-				'cartList'
+				'cartList',
+				'orderGoods',
+				'cartPrice'
 			]),
-			checkList: function() {
-				const filterByName = (arr) => {
-					return arr.filter(item => item.check == true)
-				}
-				return filterByName(this.cartList)
+
+			// 配送费
+			expressPrice: function() {
+				return Number(this.cartPrice)>90 ? 0 : '10.00'
 			},
 			// 商品总数
 			allCount: function() {
 				let sum = 0
-				this.checkList.forEach(item => {
+				this.orderGoods.forEach(item => {
 					sum += item.count	
 				})
 				return sum
 			},
-			// 商品价格
-			goodPrice: function() {
-				let sum = 0
-				this.checkList.forEach(item => {
-					sum += item.price * item.count	
-				})
-				return sum
-			},
-			// 付款金额
+
+			// 总付款金额
 			allPrice: function() {
-				return this.goodPrice + this.expressPrice - this.discountAmount
+				return (Number(this.cartPrice) + Number(this.expressPrice) - this.discountAmount).toFixed(2)
 			}
 		},
 		onShow() {
@@ -192,9 +187,9 @@ import {mapState, mapMutations } from 'vuex'
 					address: this.address.city + this.address.address,
 					discount: 0,
 					discount_id: '',
-					goodsList: this.checkList
+					goodsList: this.orderGoods
 				}
-				console.log(this.checkList, 56);
+				console.log(this.orderGoods, 56);
 				
 				this.$fly.post('/order/create', params).then(res => {
 

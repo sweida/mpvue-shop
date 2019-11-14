@@ -18,6 +18,8 @@ const state = {
   loginData: {},
   cart: 0,
   cartList: [],
+  orderGoods: [],
+  cartPrice: 0,
   cartCount: () => {
     let sum = 0
     // state.cartList.forEach(item => {
